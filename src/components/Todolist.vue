@@ -6,9 +6,9 @@
       </ul>
       <input v-model="newTodo" @keyup.enter="addTodo" placeholder="Add a new ToDo" />
     </div>
-  </template>
+</template>
   
-  <script>
+<script>
   import axios from 'axios';
   
   export default {
@@ -22,7 +22,7 @@
       async addTodo() {
         try {
           console.log("OK", this.newTodo);
-          const response = await axios.post("http://127.0.0.1:8000", {
+          const response = await axios.post("http://localhost:8000", {
             text: this.newTodo,
           });
           console.log(response.data);
@@ -34,7 +34,7 @@
       },
       async fetchTodos() {
         try {
-          const response = await axios.get("http://127.0.0.1:8000");
+          const response = await axios.get("http://localhost:8000");
           this.todos = response.data;
         } catch (error) {
           console.error(error);
@@ -45,5 +45,5 @@
       this.fetchTodos();
     },
   };
-  </script>
+</script>
   

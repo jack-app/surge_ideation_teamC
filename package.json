@@ -3,7 +3,7 @@
   "version": "0.0.0",
   "private": true,
   "scripts": {
-    "start": "concurrently \"npm run dev -- --port 8080\" \"uvicorn main:app --host 127.0.0.1 --port 8000 --reload\"",
+    "start": "concurrently \"npm run dev -- --port 8080\" \"uvicorn main:app --host localhost --port 8000 --reload\"",
     "dev": "vite",
     "build": "vite build",
     "preview": "vite preview",
