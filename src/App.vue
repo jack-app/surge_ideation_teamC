@@ -1,6 +1,6 @@
 <script setup>
+//composition APIのシンタックスシュガー(異なる構文)
 import { RouterLink, RouterView } from 'vue-router'
-import Todolist from './components/Todolist.vue'
 </script>
 
 <template>

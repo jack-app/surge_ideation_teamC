@@ -1,3 +1,6 @@
-google-api-python-client
 fastapi
 requests
+axios
+uvicorn
+python-dotenv
+firebase-admin

@@ -189,4 +189,6 @@ cython_debug/
 #.idea/
 
 # OAuth secrets
-client_secrets.json
+.env
+account_key.json
+backup
