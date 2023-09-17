@@ -4,9 +4,8 @@ from user import get_user, get_user_token
 # FastAPIを構成
 app = FastAPI()
 
-@app.get("/")
+@app.post("/get_token")
 def hoge():
-    return None
     return get_user_token("tomoki826.movie@gmail.com", "Ccl914721")
 
 @app.get("/api/")

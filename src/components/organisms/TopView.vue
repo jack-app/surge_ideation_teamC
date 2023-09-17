@@ -9,6 +9,8 @@
   export default defineComponent({
     name: 'TopView',
     methods: {
+      //vuexのstoreを実行する
+      //ログイン情報はstoreで内部的に変更するので便利
       logout () {
         return this.$store.dispatch('logout')
           .then(() => {

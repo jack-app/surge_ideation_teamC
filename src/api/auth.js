@@ -1,3 +1,4 @@
+//外部のAPIサーバーとやり取りする
 import axios from 'axios'
 
 const headers = {}
@@ -14,8 +15,9 @@ export default {
   login: (authInfo) => {
     config.method = 'post'
     config.data = authInfo
-
     return axios.request(config)
+    //非同期処理のリクエストで成功したら.then()
+    //失敗したら.catchを投げる
       .then(res => res)
       .catch(error => { throw error })
   },
