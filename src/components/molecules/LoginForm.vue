@@ -2,8 +2,9 @@
   <div class="login">
     <div class="login-header">
       <div class="login-text">Surbeにログイン</div>
-      <div v-if="error" class="error-message blinking">{{ error }}</div>
+      <div v-if="error" class="error-message blinking-text">{{ error }}</div>
     </div>
+    <form @submit.prevent="signin()">
     <div class="input-item">
       <div class="input-item-fix">
       <input
@@ -28,9 +29,10 @@
       </div>
     </div>
     <div class="setup-button">
-      <button class="btn btn-primary btn-lg" @click="signin()">サインイン</button>
+      <button class="btn btn-primary btn-lg" type="submit">サインイン</button>
       <button class="btn btn-primary btn-lg" @click="signup()">サインアップ</button>
     </div>
+    </form>
   </div>
 </template>
   
@@ -112,6 +114,8 @@ button {
   margin: 10px;
 }
 .error-message {
+  display: block;
+  height: 1em;
   color: red;
 }
 </style>

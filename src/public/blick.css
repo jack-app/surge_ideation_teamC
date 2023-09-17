@@ -10,6 +10,6 @@
     }
 }
   
-.blinking {
+.blinking-text {
     animation: blink 1s; /* 1秒間でアニメーション */
 }
