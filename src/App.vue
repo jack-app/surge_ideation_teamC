@@ -1,6 +1,6 @@
 <script setup>
 //composition APIのシンタックスシュガー(異なる構文)
-import { RouterLink, RouterView } from 'vue-router'
+import { RouterView } from 'vue-router'
 </script>
 
 <template>

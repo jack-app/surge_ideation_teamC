@@ -1,25 +1,33 @@
 <template>
     <div class="login">
-      <div class="form-item">
-        <label for="email">Email</label>
+      <div class="login-header">
+        <div class="login-text">Surbeにログイン</div>
+      </div>
+      <div class="input-item">
+        <div class="input-item-fix">
         <input
           id="email"
           autocomplete="off"
           type="text"
           v-model="email"
+          placeholder="メールアドレス"
+          required
+          autofocus
         >
-      </div>
-      <div class="form-item">
-        <label for="password">Password</label>
+        </div>
+        <div class="input-item-fix">
         <input
           id="password"
           autocomplete="off"
           type="password"
           v-model="password"
+          placeholder="パスワード"
+          required
         >
+        </div>
       </div>
-      <div class="form-item">
-        <button class="button" @click="handle()">Login</button>
+      <div class="login-button">
+        <button class="btn btn-primary btn-lg" @click="handle()">サインイン</button>
       </div>
     </div>
   </template>
@@ -50,7 +58,6 @@
     methods: {
       handle() {
         //propsの内容を書き換える
-        console.log("OK")
         //thisはそのコンポーネント自体を返す
         return this.login({
           'user': {
@@ -65,26 +72,32 @@
   });
   </script>
   
-  <style scoped>
-  /* scopedを付けると現在のコンポーネントのみ適用 */
-  .form-item {
-    margin: 0 auto;
-    text-align: center;
-  }
-  
-  label {
-    display: block;
-  }
-  
-  input {
-    width: 50%;
-    padding: .5em;
-    font: inherit;
-  }
-  
-  button {
-    padding: 0.5em;
-    margin: 1em;
-  }
-  </style>
-  
+<style scoped>
+/* scopedを付けると現在のコンポーネントのみ適用 */
+input {
+  width: 100%;
+  padding: .5em;
+  font: inherit;
+}
+button {
+  padding: 0.5em 1em;
+  margin: 1em 0;
+}
+.login {
+  display: block;
+}
+.login-text {
+  text-align: center;
+  font-size: 30px;
+  margin: 1em 0;
+}
+.input-item {
+  text-align: left;
+}
+.input-item-fix {
+  margin: 0.5em 0;
+}
+.login-button {
+  text-align: center;
+}
+</style>

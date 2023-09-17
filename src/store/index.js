@@ -1,20 +1,18 @@
 import { createStore } from 'vuex'
-import actions from '@/store/modules/actions'
-import mutations from '@/store/modules/mutations'
+import state from './modules/state'
+import actions from './modules/actions'
+import mutations from './modules/mutations'
 
-//storeで取り扱う状態を全て定義
-const state = {
-  auth: {
-    token: localStorage.getItem('token'),
-    userId: null
-  }
-}
+console.log("OK");
 
 //vuexのストアをexportする
 //actionsでmutationsに備える処理を実行
 //mutationsでstoreの値を変更
-export default createStore({
+//vuex4以降はcreateStore
+const store = createStore({
   state,
   actions,
   mutations,
 })
+
+export default store;

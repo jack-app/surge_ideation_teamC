@@ -15,6 +15,7 @@ export default {
   login: (authInfo) => {
     config.method = 'post'
     config.data = authInfo
+    return "OK"
     return axios.request(config)
     //非同期処理のリクエストで成功したら.then()
     //失敗したら.catchを投げる

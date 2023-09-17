@@ -1,13 +1,15 @@
-import { createApp } from 'vue'
-import App from './App.vue'
-import router from './router/index'
+import { createApp } from 'vue';
+import App from './App.vue';
+import router from './router/index';
+import store from './store/index';
 
 //フロントエンドのアプリを構成
 //引数はVueのルートコンポーネント
-const app = createApp(App)
+const app = createApp(App);
 
-//必要なプラグインを構成
-app.use(router)
+//Vueインダクタンスを構成
+app.use(router);
+app.use(store);
 
 //Vueアプリのインスタンスを作成
 app.mount('#app')

@@ -1,4 +1,4 @@
-import { createRouter, createWebHashHistory, createWebHistory } from 'vue-router'
+import { createRouter, createWebHistory } from 'vue-router'
 import Login from '../components/organisms/LoginView.vue'
 import Top from '../components/organisms/TopView.vue'
 import { authorizeToken } from './guards'
@@ -24,7 +24,6 @@ const routes = [
 //ルーティング情報を扱うルータを作る
 const router = createRouter({
   history: createWebHistory(),
-  //history: createWebHashHistory(),  //ハッシュでURLを指定する(SPAなどで便利)
   routes
 })
 
@@ -42,6 +41,14 @@ const router = createRouter({
 //beforeRouteUpdate
 //同じコンポーネントでルートを変更する時に実行
 
-router.beforeEach(authorizeToken) //ログインせずにログイン限定ページのアクセスを防ぐ
+//router.beforeEach(authorizeToken) //ログインせずにログイン限定ページのアクセスを防ぐ
+
+router.beforeEach((to, from, next) => {
+  if (to.matched.some(page => page.meta.requiresAuth) && (store.state.auth.token === null)) {
+    next('/login')
+  } else {
+    next()
+  }
+})
 
 export default router
