@@ -1,7 +1,7 @@
 import { createRouter, createWebHistory } from 'vue-router'
-import Login from '../components/organisms/LoginView.vue'
-import Top from '../components/organisms/TopView.vue'
-import { authorizeToken } from './guards'
+import Login from '@/components/organisms/LoginView.vue'
+import Top from '@/components/organisms/TopView.vue'
+import { authorizeToken } from '@/router/guards'
 
 //構成するルーターを設定
 //SPAを実現可能

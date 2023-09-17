@@ -8,8 +8,8 @@ to ナビゲーション先のルート情報
 from 元のルートの情報
 next ナビゲーションを制御する
 */
+
 export const authorizeToken = (to, from, next) => {
-  console.log(to.matched.some(page => page.meta.requiresAuth), store.state.auth.idtoken)
   if (to.matched.some(page => page.meta.requiresAuth) && (store.state.auth.idtoken === null)) {
     next('/login')
   } else {

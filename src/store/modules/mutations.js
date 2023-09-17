@@ -1,4 +1,4 @@
-import * as types from './mutation-types'
+import * as types from '@/store/modules/mutation-types'
 
 //vuexストアのstateの状態を変更
 export default {

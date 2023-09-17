@@ -1,0 +1,15 @@
+@keyframes blink {
+    0% {
+      opacity: 1; /* 非透明 */
+    }
+    50% {
+      opacity: 0; /* 透明 */
+    }
+    100% {
+      opacity: 1; /* 非透明 */
+    }
+}
+  
+.blinking {
+    animation: blink 1s; /* 1秒間でアニメーション */
+}

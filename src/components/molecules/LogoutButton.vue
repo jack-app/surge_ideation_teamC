@@ -13,13 +13,9 @@
     name: 'LogoutButton',
     //v-on(html上の特定の処理、ボタンクリックなど)をmethodsで記述
     methods: {
-        logout () {
+        logout() {
             //storeを介してログアウトを実行
             return this.$store.dispatch('logout')
-            .then(() => {
-                this.$router.push('/login')
-            })
-            .catch(error => { throw error })
         }
       }
   })

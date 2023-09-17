@@ -2,6 +2,7 @@
   <div class="login">
     <div class="login-header">
       <div class="login-text">Surbeにログイン</div>
+      <div v-if="error" class="error-message blinking">{{ error }}</div>
     </div>
     <div class="input-item">
       <div class="input-item-fix">
@@ -35,6 +36,8 @@
   
 <script>
   import { defineComponent } from 'vue';
+  import { mapState } from 'vuex';
+  import "@/public/blick.css";
   
   export default defineComponent({
     name: 'LoginForm',
@@ -54,6 +57,10 @@
         type: Function,
         required: true
       }
+    },
+    //エラーメッセージを検出
+    computed: {
+      ...mapState(['error'])
     },
     //v-on(html上の特定の処理、ボタンクリックなど)をmethodsで記述
     methods: {
@@ -103,5 +110,8 @@ button {
 }
 .setup-button > * {
   margin: 10px;
+}
+.error-message {
+  color: red;
 }
 </style>

@@ -21,8 +21,7 @@ export default {
     try {
       const res = await axios.request(config)
       if (res.data.error !== undefined) {
-        const error_msg = res.data.error.message
-        throw new Error(error_msg)
+        throw new Error(res.data.error.message)
       }
       else {
         return res
