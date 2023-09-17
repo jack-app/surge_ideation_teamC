@@ -16,6 +16,8 @@ API_KEY = os.getenv("API_KEY")
 cred = credentials.Certificate('./account_key.json')
 firebase_admin.initialize_app(cred)
 
+security = HTTPBearer()
+
 # トークンを取得
 def get_user_token(email, password):
     url = "https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=" + API_KEY
@@ -26,6 +28,20 @@ def get_user_token(email, password):
     }
     return requests.post(url=url, json=data).json()
 
+# トークンを削除
+def delete_user_token(id_token):
+    try:
+        decoded_token = auth.verify_id_token(id_token)
+        uid = decoded_token["uid"]
+        auth.revoke_refresh_tokens(uid)
+        print('ユーザーのUID', uid)
+    except Exception as e:
+        raise HTTPException(status_code=500, detail="ログアウトエラー")
+
+def hooge():
+    pass
+
+"""
 # ユーザー情報を取得
 def get_user(res: Response, cred: HTTPAuthorizationCredentials=Depends(HTTPBearer(auto_error=False))):
     print("ready", cred)
@@ -45,3 +61,4 @@ def get_user(res: Response, cred: HTTPAuthorizationCredentials=Depends(HTTPBeare
         )
     res.headers['WWW-Authenticate'] = 'Bearer realm="auth_required"'
     return decoded_token
+"""

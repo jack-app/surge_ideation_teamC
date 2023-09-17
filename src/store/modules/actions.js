@@ -2,24 +2,31 @@ import auth from '@/api/auth'
 import * as types from './mutation-types'
 
 export default {
-  //vuexオブジェクトのcommitを分割代入
+  //ログイン時の非同期通信
   login({ commit }, data) {
-    //authコンポーネントの非同期処理結果をreturn
-    return auth.login(data.user)
+    auth.login(data.user)
       .then((res) => {
         //ログインに変更
-        localStorage.setItem('token', res.data.token)
+        localStorage.setItem('idToken', res.data.idToken)
+        localStorage.setItem('refreshToken', res.data.refreshToken)
         //mutationを呼び出し
         commit(types.LOGIN, res.data)
+        window.location.href = "/"
       })
-      .catch(error => { throw error })
+      .catch(error => {
+        throw error //エラーを親コンポーネントに伝える
+      })
   },
+  //ログアウト時の非同期通信
   logout({ commit }) {
-    return auth.logout()
-      .then(() => {
-        localStorage.removeItem('token')
-        commit(types.LOGOUT, { token: null, userId: null })
+    auth.logout()
+      .then((res) => {
+        localStorage.removeItem('idToken')
+        localStorage.removeItem('refreshToken')
+        commit(types.LOGOUT, { idtoken: null, refreshtoken: null })
       })
-      .catch(error => { throw error })
+      .catch(error => { 
+        throw error
+      })
   }
 }

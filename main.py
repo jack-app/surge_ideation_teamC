@@ -1,18 +1,25 @@
-from fastapi import FastAPI, Depends
-from user import get_user, get_user_token
+from fastapi import FastAPI
+from src.api.user import get_user_token, delete_user_token, hooge
+from pydantic import BaseModel
 
 # FastAPIを構成
 app = FastAPI()
 
-@app.post("/get_token")
-def hoge():
-    return get_user_token("tomoki826.movie@gmail.com", "Ccl914721")
+# リクエストデータのモデルを作成
+class Login(BaseModel):
+    email: str
+    password: str
 
-@app.get("/api/")
-async def hello():
-    return {"msg":"Hello, this is API server"} 
+class Logout(BaseModel):
+    id_token: str
 
-# トークンをチェックする
-@app.get("/api/me")
-async def hello_user(user = Depends(get_user)):
-    return {"msg":"Hello, user","uid":user['uid']} 
+# ログイン情報からトークンを取得
+@app.post("/api/login")
+async def login(data: Login):
+    return get_user_token(data.email, data.password)
+
+# ログアウトする
+@app.post("/api/logout")
+async def logout(data: Logout):
+    delete_user_token(data.id_token)
+    return None

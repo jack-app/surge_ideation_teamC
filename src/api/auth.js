@@ -1,31 +1,46 @@
 //外部のAPIサーバーとやり取りする
 import axios from 'axios'
 
-const headers = {}
-headers['Content-type'] = 'application/json'
-
+const headers = {
+  'Access-Control-Allow-Origin': '*',
+  'Content-type': 'application/json',
+}
 const config = {
   method: null,
-  url: 'http://localhost:8081', // APIサーバー
+  url: null,
   headers,
   data: null
 }
+const permaLink = 'http://localhost:8000/api'
 
 export default {
-  login: (authInfo) => {
+  login: async (authInfo) => {
+    config.url = permaLink + '/login'
     config.method = 'post'
     config.data = authInfo
-    return "OK"
-    return axios.request(config)
-    //非同期処理のリクエストで成功したら.then()
-    //失敗したら.catchを投げる
-      .then(res => res)
-      .catch(error => { throw error })
+    try {
+      const res = await axios.request(config)
+      if (res.data.error !== undefined) {
+        const error_msg = res.data.error.message
+        throw new Error(error_msg)
+      }
+      else {
+        return res
+      }
+    } catch (error) {
+      throw error
+    }
   },
-  logout: () => {
-    config.method = 'delete'
-    return axios.request(config)
-      .then(res => res)
-      .catch(error => { throw error })
+  logout: async () => {
+    config.url = permaLink + '/logout'
+    config.method = 'post'
+    config.data = {
+      "id_token": localStorage.getItem('idToken')
+    }
+    try {
+      const res = await axios.request(config)
+    } catch (error) {
+      throw error
+    }
   }
 }

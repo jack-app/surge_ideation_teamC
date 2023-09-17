@@ -41,14 +41,6 @@ const router = createRouter({
 //beforeRouteUpdate
 //同じコンポーネントでルートを変更する時に実行
 
-//router.beforeEach(authorizeToken) //ログインせずにログイン限定ページのアクセスを防ぐ
-
-router.beforeEach((to, from, next) => {
-  if (to.matched.some(page => page.meta.requiresAuth) && (store.state.auth.token === null)) {
-    next('/login')
-  } else {
-    next()
-  }
-})
+router.beforeEach(authorizeToken) //ログインせずにログイン限定ページのアクセスを防ぐ
 
 export default router

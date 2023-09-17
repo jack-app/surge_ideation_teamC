@@ -10,6 +10,7 @@ export default defineConfig({
   ],
   resolve: {
     alias: {
+      //vueのルートの簡略表現を定義
       '@': fileURLToPath(new URL('./src', import.meta.url))
     }
   },

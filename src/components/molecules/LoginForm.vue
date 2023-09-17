@@ -1,38 +1,39 @@
 <template>
-    <div class="login">
-      <div class="login-header">
-        <div class="login-text">Surbeにログイン</div>
+  <div class="login">
+    <div class="login-header">
+      <div class="login-text">Surbeにログイン</div>
+    </div>
+    <div class="input-item">
+      <div class="input-item-fix">
+      <input
+        id="email"
+        autocomplete="off"
+        type="text"
+        v-model="email"
+        placeholder="メールアドレス"
+        required
+        autofocus
+      >
       </div>
-      <div class="input-item">
-        <div class="input-item-fix">
-        <input
-          id="email"
-          autocomplete="off"
-          type="text"
-          v-model="email"
-          placeholder="メールアドレス"
-          required
-          autofocus
-        >
-        </div>
-        <div class="input-item-fix">
-        <input
-          id="password"
-          autocomplete="off"
-          type="password"
-          v-model="password"
-          placeholder="パスワード"
-          required
-        >
-        </div>
-      </div>
-      <div class="login-button">
-        <button class="btn btn-primary btn-lg" @click="handle()">サインイン</button>
+      <div class="input-item-fix">
+      <input
+        id="password"
+        autocomplete="off"
+        type="password"
+        v-model="password"
+        placeholder="パスワード"
+        required
+      >
       </div>
     </div>
-  </template>
+    <div class="setup-button">
+      <button class="btn btn-primary btn-lg" @click="signin()">サインイン</button>
+      <button class="btn btn-primary btn-lg" @click="signup()">サインアップ</button>
+    </div>
+  </div>
+</template>
   
-  <script>
+<script>
   import { defineComponent } from 'vue';
   
   export default defineComponent({
@@ -56,7 +57,7 @@
     },
     //v-on(html上の特定の処理、ボタンクリックなど)をmethodsで記述
     methods: {
-      handle() {
+      signin() {
         //propsの内容を書き換える
         //thisはそのコンポーネント自体を返す
         return this.login({
@@ -70,7 +71,7 @@
       }
     }
   });
-  </script>
+</script>
   
 <style scoped>
 /* scopedを付けると現在のコンポーネントのみ適用 */
@@ -97,7 +98,10 @@ button {
 .input-item-fix {
   margin: 0.5em 0;
 }
-.login-button {
+.setup-button {
   text-align: center;
+}
+.setup-button > * {
+  margin: 10px;
 }
 </style>

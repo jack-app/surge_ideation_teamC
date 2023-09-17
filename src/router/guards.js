@@ -1,5 +1,5 @@
 //storeの状態に従って、ログイン状態を管理
-import store from '../store/index'
+import store from '@/store/index'
 
 /*
 ナビゲーションカード(beforeEachなど)のコールバック関数
@@ -9,7 +9,8 @@ from 元のルートの情報
 next ナビゲーションを制御する
 */
 export const authorizeToken = (to, from, next) => {
-  if (to.matched.some(page => page.meta.requiresAuth) && (store.state.auth.token === null)) {
+  console.log(to.matched.some(page => page.meta.requiresAuth), store.state.auth.idtoken)
+  if (to.matched.some(page => page.meta.requiresAuth) && (store.state.auth.idtoken === null)) {
     next('/login')
   } else {
     next()
