@@ -1,6 +1,8 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import Login from '@/components/organisms/LoginView.vue'
 import Top from '@/components/organisms/TopView.vue'
+import SignUp from '@/components/organisms/SignupView.vue'
+
 import { authorizeToken } from '@/router/guards'
 
 //構成するルーターを設定
@@ -18,7 +20,12 @@ const routes = [
     path: '/login',
     name: 'Login',
     component: Login
-  }
+  },
+  {
+    path: '/signup',
+    name: 'Signup',
+    component: SignUp
+  },
 ]
 
 //ルーティング情報を扱うルータを作る

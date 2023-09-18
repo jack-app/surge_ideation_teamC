@@ -3,7 +3,7 @@
     <LoginForm :login=handleLogin />
   </div>
 </template>
-  
+
 <script>
   import { defineComponent } from 'vue';
   import LoginForm from '@/components/molecules/LoginForm.vue';
@@ -20,7 +20,7 @@
 
     methods: {
       //ボタンを押した時にhandleLogin(LoginForm.vueのthis.loginで呼び出している)
-      handleLogin (authInfo) {
+      handleLogin(authInfo) {
 
         //Vuexのストアにアクセス
         //非同期処理なので.then()や.catch()を含む
@@ -31,12 +31,12 @@
       }
     }
   });
-  </script>
-  
-  <style scoped>
-  .login-view {
-    width: 400px;
-    margin: auto;
-  }
-  </style>
+</script>
+
+<style scoped>
+.login-view {
+  width: 400px;
+  margin: auto;
+}
+</style>
   

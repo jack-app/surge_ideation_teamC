@@ -1,6 +1,6 @@
 from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
 from fastapi import Depends, HTTPException, status, Response
-from firebase_admin import auth, credentials
+from firebase_admin import auth, credentials, firestore
 
 import firebase_admin
 import requests
@@ -16,7 +16,10 @@ API_KEY = os.getenv("API_KEY")
 cred = credentials.Certificate('./account_key.json')
 firebase_admin.initialize_app(cred)
 
-security = HTTPBearer()
+# firestoreデータベースを取得
+db = firestore.client()
+
+#security = HTTPBearer()
 
 # トークンを取得
 def get_user_token(email, password):
@@ -26,7 +29,14 @@ def get_user_token(email, password):
         "password": password,
         "returnSecureToken": True
     }
-    return requests.post(url=url, json=data).json()
+    res = requests.post(url=url, json=data).json()
+    if 'error' in res:
+        return res
+        raise HTTPException(status_code=int(res['error']['code']), detail=res['error']['message'])
+    doc_ref = db.collection("user").document(res['localId'])
+    doc = doc_ref.get()
+    res.update(doc.to_dict())
+    return res
 
 # トークンを削除
 def delete_user_token(id_token):
@@ -38,8 +48,20 @@ def delete_user_token(id_token):
     except Exception as e:
         raise HTTPException(status_code=500, detail="ログアウトエラー")
 
-def hooge():
-    pass
+# ユーザーを新規作成
+def add_user_account(user_name, email, password):
+    url = "https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=" + API_KEY
+    data = {
+        "email": email,
+        "password": password,
+        "returnSecureToken": True
+    }
+    res = requests.post(url=url, json=data).json()
+    if 'error' in res:
+        raise HTTPException(status_code=int(res['error']['code']), detail=res['error']['message'])
+    doc_ref = db.collection("user").document(res['localId'])
+    doc_ref.set({"name": user_name})
+    return res
 
 """
 # ユーザー情報を取得

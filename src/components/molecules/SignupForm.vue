@@ -1,11 +1,22 @@
 <template>
-  <div class="login">
-    <div class="login-header">
-      <div class="login-text">Surbeにログイン</div>
+    <div class="setup-form">
+    <div class="setup-header">
+      <div class="setup-text">Surbeに新規登録</div>
       <div v-if="error" class="error-message blinking-text">{{ error }}</div>
     </div>
-    <form @submit.prevent="signin()">
+    <form @submit.prevent="signup()">
     <div class="input-item">
+      <div class="input-item-fix">
+      <input
+        id="name"
+        autocomplete="off"
+        type="text"
+        v-model="name"
+        placeholder="ユーザー名(半角・全角文字可)"
+        required
+        autofocus
+      >
+      </div>
       <div class="input-item-fix">
       <input
         id="email"
@@ -14,7 +25,6 @@
         v-model="email"
         placeholder="メールアドレス"
         required
-        autofocus
       >
       </div>
       <div class="input-item-fix">
@@ -23,39 +33,49 @@
         autocomplete="off"
         type="password"
         v-model="password"
-        placeholder="パスワード"
+        placeholder="パスワード(6文字以上)"
+        required
+      >
+      </div>
+      <div class="input-item-fix">
+      <input
+        id="confirm"
+        autocomplete="off"
+        type="password"
+        v-model="confirmPassword"
+        placeholder="パスワードを再度入力"
         required
       >
       </div>
     </div>
     <div class="setup-button">
-      <button class="btn btn-primary btn-lg" type="submit">サインイン</button>
-      <button class="btn btn-secondary btn-lg" @click="signup()">サインアップ</button>
+      <button class="btn btn-secondary btn-lg" @click="login()">サインイン</button>
+      <button class="btn btn-primary btn-lg" type="submit">サインアップ</button>
     </div>
     </form>
   </div>
 </template>
-  
+
 <script>
   import { defineComponent } from 'vue';
   import { mapState } from 'vuex';
   import "@/public/blick.css";
-  
+
   export default defineComponent({
-    name: 'LoginForm',
+    //nameはデバッグの区別用
+    name: 'SetupForm',
 
     //データを定義、this.emailなどで参照できる
     data() {
       return {
+        name: '',
         email: '',
-        password: ''
+        password: '',
+        confirmPassword: ''
       }
     },
-    //親コンポーネントから受け取るpropsの情報を指定
-    //requiredは必須
     props: {
-      //こうすることで、this.login形式で記述できる
-      login: {
+      setup: {
         type: Function,
         required: true
       }
@@ -64,29 +84,26 @@
     computed: {
       ...mapState(['error'])
     },
-    //v-on(html上の特定の処理、ボタンクリックなど)をmethodsで記述
     methods: {
-      signin() {
-        //propsの内容を書き換える
-        //thisはそのコンポーネント自体を返す
-        return this.login({
+      signup() {
+        return this.setup({
           'user': {
+            'name': this.name,
             'email': this.email,
             'password': this.password,
+            'confirmPassword': this.confirmPassword
           }
         })
-        //エラーを表示する
         .catch(err => { throw err })
       },
-      signup() {
-        this.$router.push("/signup")
+      login() {
+        this.$router.push("/login")
       }
     }
-  });
+  })
 </script>
-  
+
 <style scoped>
-/* scopedを付けると現在のコンポーネントのみ適用 */
 input {
   width: 100%;
   padding: .5em;
@@ -96,10 +113,10 @@ button {
   padding: 0.5em 1em;
   margin: 1em 0;
 }
-.login {
+.setup-form {
   display: block;
 }
-.login-text {
+.setup-text {
   text-align: center;
   font-size: 30px;
   margin: 1em 0;

@@ -41,5 +41,25 @@ export default {
     } catch (error) {
       throw error
     }
+  },
+  signup: async (authInfo) => {
+    config.url = permaLink + '/signup'
+    config.method = 'post'
+    config.data = {
+      "name": authInfo.name,
+      "email": authInfo.email,
+      "password": authInfo.password,
+    }
+    try {
+      const res = await axios.request(config)
+      if (res.data.error !== undefined) {
+        throw new Error(res.data.error.message)
+      }
+      else {
+        return res
+      }
+    } catch (error) {
+      throw error
+    }
   }
 }
