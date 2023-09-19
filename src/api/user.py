@@ -10,7 +10,7 @@ import os
 
 # 環境変数を構成
 load_dotenv()
-API_KEY = os.getenv("API_KEY")
+FIRESTORE_API_KEY = os.getenv("FIRESTORE_API_KEY")
 
 # firebaseを構成
 cred = credentials.Certificate('./account_key.json')
@@ -23,7 +23,7 @@ db = firestore.client()
 
 # トークンを取得
 def get_user_token(email, password):
-    url = "https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=" + API_KEY
+    url = "https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=" + FIRESTORE_API_KEY
     data = {
         "email": email,
         "password": password,
@@ -50,7 +50,7 @@ def delete_user_token(id_token):
 
 # ユーザーを新規作成
 def add_user_account(user_name, email, password):
-    url = "https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=" + API_KEY
+    url = "https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=" + FIRESTORE_API_KEY
     data = {
         "email": email,
         "password": password,
