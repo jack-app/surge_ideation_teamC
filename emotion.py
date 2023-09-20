@@ -38,7 +38,8 @@ def emotion(retrieval,emotion):
     return 'https://www.youtube.com/watch?v='+videoid
     # return pprint.pprint(response)
 
-def songle_search(retrival,emotion):
+def songle_search(retrieval):
+    # APIKEYを取得する
     API_KEY=os.getenv('API_KEY')
     YOUTUBE_API_SERVICE_NAME = 'youtube'
     YOUTUBE_API_VERSION = 'v3'
@@ -46,7 +47,36 @@ def songle_search(retrival,emotion):
     YOUTUBE_API_SERVICE_NAME,
     YOUTUBE_API_VERSION,
     developerKey = API_KEY)
+    # video_id_listの初期化
+    video_id_list = []
+    SEARCH_QUELY = retrieval
     
+    # リスポンスの取得
+    request = youtube.search().list(
+    q=SEARCH_QUELY, 
+    part='id', 
+    maxResults=1,
+    type='video',
+    videoDuration='medium', 
+    order='viewCount'
+    )
+    response = request.execute()
+
+    video_id_list.extend(list(map(lambda v : v['id']['videoId'],response['items'])))
+    video_id_list=list(map(lambda v: "https://www.youtube.com/watch?v="+v , video_id_list ))
+    def songle_in(url):
+        Api_EndPoint = 'https://widget.songle.jp/api/v1/song/chorus.json'
+        headers = {"Content-Type": "application/json"}
+        url = {'url':url}
+        json_url = json.dumps(url)
+        #songleからサビのデータを取得⇒データの変換
+        sabi = requests.get(Api_EndPoint, headers=headers,data=json_url)
+        if str(sabi) == '<Response [200]>':
+            return True
+        else:
+            return False
+    video_id_list = list(filter(lambda v:songle_in(v),video_id_list))
+    return video_id_list
 
 
 def playlist(retrieval):
@@ -97,6 +127,8 @@ def songle_se(playlistedId):
     headers = {"Content-Type": "application/json"}
     
     def songle_in(url):
+        Api_EndPoint = 'https://widget.songle.jp/api/v1/song/chorus.json'
+        headers = {"Content-Type": "application/json"}
         url = {'url':url}
         json_url = json.dumps(url)
         #songleからサビのデータを取得⇒データの変換
