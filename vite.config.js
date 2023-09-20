@@ -11,7 +11,7 @@ export default defineConfig({
   resolve: {
     alias: {
       //vueのルートの簡略表現を定義
-      '@': fileURLToPath(new URL('./tomoki', import.meta.url))
+      '@': fileURLToPath(new URL('./src', import.meta.url))
     }
   },
   server: {
