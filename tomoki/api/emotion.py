@@ -50,10 +50,10 @@ def emotion(retrieval, emotion):
     # return pprint.pprint(response)
 
 #入力してもらう部分
-search = input('ここに動画のタイトルを入力してください')
-em = input('ここに感情を入力してください')
+#search = input('ここに動画のタイトルを入力してください')
+#em = input('ここに感情を入力してください')
 
-emotion(search,em)
+#emotion(search,em)
 
 # ユーチューブAPIからプレイリストIDを取得する。
 def playlist(retrieval):
