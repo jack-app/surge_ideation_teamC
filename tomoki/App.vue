@@ -5,7 +5,6 @@ import { RouterView } from 'vue-router'
 
 <template>
   <RouterView />
->>>>>>> tomoki/database:tomoki/App.vue
 </template>
 
 <style>
