@@ -1,8 +1,12 @@
 <script setup>
 import { RouterLink, RouterView } from 'vue-router'
 import { ref, onMounted, defineComponent } from "vue"
+
+// 非同期通信のモジュールをインポート
+// 無かったら、「npm install axios」をコマンドラインで実行
 import axios from 'axios';
 
+// スワイプでスクロールさせない
 function disableScroll(event) {
   event.preventDefault()
 }
@@ -10,11 +14,11 @@ function disableScroll(event) {
 // イベントと関数を紐付け
 document.addEventListener('touchmove', disableScroll, { passive: false })
 
-
+// 本来はバックエンドからプレイリストID内の動画URLを記述する
 const videoUrls = ref([
   'https://www.youtube.com/embed/oy6MDr6I6rM?start=10&end=20',
-  'https://www.youtube.com/embed/bqigIHMComEstart=10&end=20',
-  'https://www.youtube.com/embed/m34DPnRUfMUstart=10&end=20'
+  'https://www.youtube.com/embed/bqigIHMComE?start=10&end=20',
+  'https://www.youtube.com/embed/m34DPnRUfMU?start=10&end=20'
   // 他のURLを追加
 ])
 
@@ -68,6 +72,9 @@ onMounted(() => {
   <body>
     <div class="content">
       <h2 class="title">-surbe-</h2>
+
+      <!-- この中のbuttonタグが感情を表すボタン -->
+      <!-- @click="関数名" でボタンをクリックしたときに関数を実行できる -->
       <section id="choice">
         <div class="space1"></div>
         <button class="choice1" @click="click()">happy</button>
@@ -112,7 +119,9 @@ onMounted(() => {
       <div class="player">
         <h1 class="feel">feeling list</h1>
 
+        <!-- 再生ボタン部分 これを押して再生・停止を交互に切り替えたい-->
         <button class="play">▶</button>
+        
         <button class="fav">♡</button>
       </div>
     </div>
@@ -124,28 +133,35 @@ export default defineComponent({
     name: 'SendPlaylistID',
     methods: {
         async click() {
-        // プレイリストIDを送る処理を書く
-          
+            // プレイリストIDを送る処理を書く
+
+            // これはWebサイトのHeader情報(変えないほうがいい)
             const headers = {
               'Access-Control-Allow-Origin': '*',
               'Content-type': 'application/json',
             }
+
+            // Webサイトの中身のデータ部分
             const config = {
               method: 'post',
-              url: 'http://localhost:8000/api',
+              url: 'http://localhost:8000/api/playlistid',
               headers,
               data: {
-                'playlistID': 'hogehoge'
+                // これは「楽しい感情」のプレイリストID
+                // これ以外にも「悲しい感情」「寂しい感情」などのプレイリストIDを、ボタンに合わせて振り分けていきたい
+                playlistID: 'PLNG3n51ur1CeF29__IjcUS09_ME66_pVQ'
               },
             }
+
             try {
+              //　ここからバックエンドとやり取りを行う
               const res = await axios.request(config)
-              console.log(res)
+
+              // 動作確認用のconsole.log()
+              console.log(res.data)
             } catch (error) {
               throw error
             }
-          
-        console.log("hoge")
         }
     }
 })
