@@ -8,7 +8,8 @@ export default defineConfig({
   plugins: [vue()],
   resolve: {
     alias: {
-      '@': fileURLToPath(new URL('./src', import.meta.url))
+      //vueのルートの簡略表現を定義
+      '@': fileURLToPath(new URL('./tomoki', import.meta.url))
     }
   },
   server: {
@@ -16,8 +17,8 @@ export default defineConfig({
       '/api': {
         target: 'http://127.0.0.1:8000', // FastAPIバックエンドのURLを指定
         changeOrigin: true,
-        rewrite: (path) => path.replace(/^\/api/, '')
-      }
-    }
-  }
+        rewrite: (path) => path.replace(/^\/api/, ''),
+      },
+    },
+  },
 })
