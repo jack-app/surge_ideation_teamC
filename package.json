@@ -7,9 +7,13 @@
     "build": "vite build",
     "preview": "vite preview",
     "lint": "eslint . --ext .vue,.js,.jsx,.cjs,.mjs --fix --ignore-path .gitignore",
-    "format": "prettier --write src/"
+    "format": "prettier --write src/",
+    "start": "concurrently \"npm run dev -- --port 8080\" \"uvicorn main:app --host localhost --port 8000 --reload\""
   },
   "dependencies": {
+    "axios": "^1.5.0",
+    "concurrently": "^8.2.1",
+    "cors": "^2.8.5",
     "vue": "^3.3.4",
     "vue-router": "^4.2.4"
   },

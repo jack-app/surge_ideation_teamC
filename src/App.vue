@@ -1,5 +1,13 @@
 <script setup>
 import { RouterLink, RouterView } from 'vue-router'
+import { defineComponent } from 'vue'
+
+// 非同期通信のモジュールをインポート
+// 無かったら、「npm install axios」をコマンドラインで実行
+import axios from 'axios'
+import { ref, onMounted } from 'vue'
+
+// スワイプでスクロールさせない
 function disableScroll(event) {
   event.preventDefault()
 }
@@ -23,21 +31,24 @@ document.addEventListener('touchmove', disableScroll, { passive: false })
       <h2 class="title">-surbe-</h2>
       <section id="choice">
         <div class="space1"></div>
-        <button class="choice1">happy</button>
-        <button class="choice2">sad</button>
-        <button class="choice3">chill</button>
+        <button class="choice1" @click="click1()">happy</button>
+        <button class="choice2" @click="click2()">sad</button>
+        <button class="choice3" @click="click3()">chill</button>
         <div class="space2"></div>
         <div class="space3"></div>
-        <button class="choice4">fight</button>
-        <button class="choice5">like</button>
-        <button class="choice6">etc</button>
+        <button class="choice4" @click="click4()">fight</button>
+        <button class="choice5" @click="click5()">like</button>
+        <button class="choice6" @click="click6()">etc</button>
         <div class="spacce4"></div>
       </section>
 
-      <section id="music">
-        <p class="music1">だから僕は音楽をやめた</p>
-        <p class="music1">愛を伝えたいだとか</p>
-        <p class="music1">私は最強</p>
+      <section id="yt-wrap">
+        <div id="yt-block">
+          <div class="videoWrapper">
+            <iframe id="player" width="80%" height="60%" :src="video" frameborder="0"></iframe>
+          </div>
+          <span id="play"></span>
+        </div>
       </section>
 
       <section id="recommend">
@@ -48,7 +59,8 @@ document.addEventListener('touchmove', disableScroll, { passive: false })
 
       <div class="player">
         <h1 class="feel">feeling list</h1>
-        <button class="play">▶</button>
+
+        <button class="play" @click="playFirstVideo">▶</button>
         <button class="fav">♡</button>
       </div>
     </div>
@@ -56,7 +68,7 @@ document.addEventListener('touchmove', disableScroll, { passive: false })
 </template>
 
 <style>
-html:before,
+/* html:before,
 html:after,
 body:before,
 body:after {
@@ -68,7 +80,7 @@ body:after {
 }
 
 /* 上 */
-html:before {
+/* html:before {
   height: 5px;
   width: 100vw;
   left: 0;
@@ -78,7 +90,7 @@ html:before {
 }
 
 /* 右 */
-html:after {
+/* html:after {
   width: 5px;
   height: 100vh;
   right: 0;
@@ -106,8 +118,7 @@ body:after {
   margin-left: 20px;
   opacity: 0.5;
 }
-
-html,
+*/ */ html,
 body {
   overflow: hidden;
   font-family: Arial Black;
@@ -205,6 +216,11 @@ h1 {
   text-align: center;
   margin: 2%;
 }
+.videoWrapper {
+  text-align: center;
+
+  margin-top: 5%;
+}
 
 .if {
   margin-top: 5%;
@@ -275,3 +291,220 @@ h1 {
 @media screen and (max-width: 600px) {
 }
 </style>
+
+<script>
+const videoUrls = ref([
+  'https://www.youtube.com/embed/oy6MDr6I6rM?start=10&end=20',
+  'https://www.youtube.com/embed/bqigIHMComEstart=10&end=20',
+  'https://www.youtube.com/embed/m34DPnRUfMUstart=10&end=20'
+  // 他のURLを追加
+])
+
+const currentVideoUrl = ref('') // 現在の動画URLを保持するリファレンス
+
+// ページが読み込まれたときに初期動画を設定
+onMounted(() => {
+  playFirstVideo()
+})
+
+// 動画を再生する関数
+function playVideo(videoIndex) {
+  currentVideoUrl.value = videoUrls.value[videoIndex]
+}
+
+// 最初の動画を再生する関数
+function playFirstVideo() {
+  if (videoUrls.value.length > 0) {
+    video = videoUrls[0]
+  }
+}
+
+//感情ボタンクリックするとバックに送る
+export default defineComponent({
+  name: 'sendPlaylistID',
+  methods: {
+    async click1() {
+      // プレイリストIDを送る処理を書く
+
+      // これはWebサイトのHeader情報(変えないほうがいい)
+      const headers = {
+        'Access-Control-Allow-Origin': '*',
+        'Content-type': 'application/json'
+      }
+
+      // Webサイトの中身のデータ部分
+      const config = {
+        method: 'post',
+        url: 'http://localhost:8000/api/playlistid',
+        headers,
+        data: {
+          playlistID: 'PLNG3n51ur1CeF29__IjcUS09_ME66_pVQ'
+        }
+      }
+
+      try {
+        const res = await axios.request(config)
+        console.log(res)
+      } catch (error) {
+        throw error
+      }
+    },
+    async click1() {
+      // プレイリストIDを送る処理を書く
+
+      // これはWebサイトのHeader情報(変えないほうがいい)
+      const headers = {
+        'Access-Control-Allow-Origin': '*',
+        'Content-type': 'application/json'
+      }
+
+      // Webサイトの中身のデータ部分
+      const config = {
+        method: 'post',
+        url: 'http://localhost:8000/api/playlistid',
+        headers,
+        data: {
+          playlistID: 'PLNG3n51ur1CeF29__IjcUS09_ME66_pVQ'
+        }
+      }
+
+      try {
+        const res = await axios.request(config)
+        console.log(res)
+      } catch (error) {
+        throw error
+      }
+    },
+    async click2() {
+      // プレイリストIDを送る処理を書く
+
+      // これはWebサイトのHeader情報(変えないほうがいい)
+      const headers = {
+        'Access-Control-Allow-Origin': '*',
+        'Content-type': 'application/json'
+      }
+
+      // Webサイトの中身のデータ部分
+      const config = {
+        method: 'post',
+        url: 'http://localhost:8000/api/playlistid',
+        headers,
+        data: {
+          playlistID: 'PLNG3n51ur1CeF29__IjcUS09_ME66_pVQ'
+        }
+      }
+
+      try {
+        const res = await axios.request(config)
+        console.log(res)
+      } catch (error) {
+        throw error
+      }
+    },
+    async click3() {
+      // プレイリストIDを送る処理を書く
+
+      // これはWebサイトのHeader情報(変えないほうがいい)
+      const headers = {
+        'Access-Control-Allow-Origin': '*',
+        'Content-type': 'application/json'
+      }
+
+      // Webサイトの中身のデータ部分
+      const config = {
+        method: 'post',
+        url: 'http://localhost:8000/api/playlistid',
+        headers,
+        data: {
+          playlistID: 'PLNG3n51ur1CeF29__IjcUS09_ME66_pVQ'
+        }
+      }
+
+      try {
+        const res = await axios.request(config)
+        console.log(res)
+      } catch (error) {
+        throw error
+      }
+    },
+    async click4() {
+      // プレイリストIDを送る処理を書く
+
+      // これはWebサイトのHeader情報(変えないほうがいい)
+      const headers = {
+        'Access-Control-Allow-Origin': '*',
+        'Content-type': 'application/json'
+      }
+
+      // Webサイトの中身のデータ部分
+      const config = {
+        method: 'post',
+        url: 'http://localhost:8000/api/playlistid',
+        headers,
+        data: {
+          playlistID: 'PLNG3n51ur1CeF29__IjcUS09_ME66_pVQ'
+        }
+      }
+
+      try {
+        const res = await axios.request(config)
+        console.log(res)
+      } catch (error) {
+        throw error
+      }
+    },
+    async click5() {
+      // プレイリストIDを送る処理を書く
+
+      // これはWebサイトのHeader情報(変えないほうがいい)
+      const headers = {
+        'Access-Control-Allow-Origin': '*',
+        'Content-type': 'application/json'
+      }
+
+      // Webサイトの中身のデータ部分
+      const config = {
+        method: 'post',
+        url: 'http://localhost:8000/api/playlistid',
+        headers,
+        data: {
+          playlistID: 'PLNG3n51ur1CeF29__IjcUS09_ME66_pVQ'
+        }
+      }
+
+      try {
+        const res = await axios.request(config)
+        console.log(res)
+      } catch (error) {
+        throw error
+      }
+    },
+    async click6() {
+      // プレイリストIDを送る処理を書く
+
+      // これはWebサイトのHeader情報(変えないほうがいい)
+      const headers = {
+        'Access-Control-Allow-Origin': '*',
+        'Content-type': 'application/json'
+      }
+
+      // Webサイトの中身のデータ部分
+      const config = {
+        method: 'post',
+        url: 'http://localhost:8000/api/playlistid',
+        headers,
+        data: {
+          playlistID: 'PLNG3n51ur1CeF29__IjcUS09_ME66_pVQ'
+        }
+      }
+
+      try {
+        const res = await axios.request(config)
+        console.log(res)
+      } catch (error) {
+        throw error
+      }
+    }
+  }
+})
+</script>
