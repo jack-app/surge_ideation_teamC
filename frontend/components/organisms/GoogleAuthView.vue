@@ -9,7 +9,7 @@
   // クエリが存在したらログイン認証する
   const query = useRouter().currentRoute.value.query
   console.log(query)
-  if (query.id !== undefined && query.token !== undefined) {
+  if (query.id !== undefined && query.token !== undefined && query.name !== undefined && query.icon !== undefined) {
       store.commit(types.LOGIN, query)
       localStorage.setItem("data", JSON.stringify(query))
       router.push('/')
@@ -58,7 +58,7 @@ h1 {
   margin: 0;
 }
 .loginpage-view {
-  padding-top: 40px;
+  padding-top: calc(50vh - 130px);
   text-align: center;
   display: block;
 }
@@ -70,7 +70,7 @@ h1 {
   justify-content: center;
 }
 .app-title {
-  margin: 30px 0;
+  margin-bottom: 30px;
 }
 .app-title > * {
   color: #5b8299;

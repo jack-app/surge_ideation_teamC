@@ -1,11 +1,11 @@
 <script setup>
-  import LogoutButton from '@/components/molecules/LogoutButton.vue';
+  import TopbarUI from '@/components/molecules/Topbar.vue';
   import ToppageUI from '@/components/molecules/App.vue';
 </script>
 
 <template>
   <div class="toppage-view">
+    <TopbarUI />
     <ToppageUI />
-    <LogoutButton />
   </div>
 </template>

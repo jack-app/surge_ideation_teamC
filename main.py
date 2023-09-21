@@ -121,6 +121,6 @@ async def handle_auth_callback(request: Request, code: str, scope: str):
     })
 
     # リダイレクト
-    query_params = {"id": channel_id, "token": access_token}
+    query_params = {"id": channel_id, "name": channel_name, "icon": icon_url, "token": access_token}
     redirect_url = FRONTEND_ORIGIN + "/login?" + "&".join([f"{key}={value}" for key, value in query_params.items()])
     return RedirectResponse(url=redirect_url)
