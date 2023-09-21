@@ -110,7 +110,10 @@ async def handle_auth_callback(request: Request, code: str, scope: str):
         })
 
     # プレイリストIDを自動生成・データベースに保存
+    
     # (未実装)
+
+    # 生成した各プレイリストIDをデータベースに登録する
     doc_ref.update({
         "happy":    "test",
         "sad":      "test",
