@@ -5,7 +5,7 @@ from dotenv import load_dotenv
 import os
 from fastapi import FastAPI
 
-os.environ['GOOGLE_APPLICATION_CREDENTIALS'] = './account_key.json'
+os.environ['GOOGLE_APPLICATION_CREDENTIALS'] = './secret/firebase_secret.json'
 
 # ユーチューブAPIから動画のurlを取得する。
 def songle_search(retrieval):
