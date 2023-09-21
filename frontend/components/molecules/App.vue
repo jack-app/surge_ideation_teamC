@@ -1,9 +1,7 @@
 <script setup>
-import { RouterLink, RouterView } from 'vue-router'
 import { ref, onMounted, defineComponent } from "vue"
 
 // 非同期通信のモジュールをインポート
-// 無かったら、「npm install axios」をコマンドラインで実行
 import axios from 'axios';
 
 // スワイプでスクロールさせない
