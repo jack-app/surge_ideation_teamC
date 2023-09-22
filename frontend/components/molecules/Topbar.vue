@@ -1,7 +1,6 @@
 <script setup>
   import LogoutButton from '@/components/molecules/LogoutButton.vue';
   import SearchForm from '@/components/molecules/SearchForm.vue';
-  const data = JSON.parse(localStorage.getItem("data"))
 </script>
 
 <template>

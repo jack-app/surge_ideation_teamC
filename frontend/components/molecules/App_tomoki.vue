@@ -1,9 +1,11 @@
 <script setup>
+import { RouterLink, RouterView } from "vue-router";
 import { defineComponent } from "vue";
 
 // 非同期通信のモジュールをインポート
 // 無かったら、「npm install axios」をコマンドラインで実行
 import axios from "axios";
+import { ref, onMounted } from "vue";
 
 // スワイプでスクロールさせない
 function disableScroll(event) {
@@ -50,7 +52,7 @@ document.addEventListener("touchmove", disableScroll, { passive: false });
                             id="player"
                             width="80%"
                             height="60%"
-                            :src="currentVideoUrl"
+                            :src="video"
                             frameborder="0"
                         ></iframe>
                     </div>
@@ -59,13 +61,14 @@ document.addEventListener("touchmove", disableScroll, { passive: false });
             </section>
 
             <section id="recommend">
-                <h1 class="if">next...</h1>
-                <p class="music2">{{ displayOtherSongTitle(1) }}</p>
-                <p class="music2">{{ displayOtherSongTitle(2) }}</p>
+                <h1 class="if">if...</h1>
+                <p class="music2">music</p>
+                <p class="music2">music</p>
             </section>
 
             <div class="player">
                 <h1 class="feel">feeling list</h1>
+
                 <button class="play" @click="playFirstVideo">▶</button>
                 <button class="fav">♡</button>
             </div>
@@ -299,37 +302,33 @@ h1 {
 </style>
 
 <script>
+const videoUrls = ref([
+    "https://www.youtube.com/embed/oy6MDr6I6rM?start=10&end=20",
+    "https://www.youtube.com/embed/bqigIHMComEstart=10&end=20",
+    "https://www.youtube.com/embed/m34DPnRUfMUstart=10&end=20",
+    // 他のURLを追加
+]);
 
-// ビデオリストから開始時間や終了時間形式に変換する
-function convertVideoList(videoUrls) {
-    var videoList = []
-    for (const key in videoUrls) {
-        videoList.push(getVideoLength(key, videoUrls[key]))
-    }
-    return videoList
+const currentVideoUrl = ref(""); // 現在の動画URLを保持するリファレンス
+
+// ページが読み込まれたときに初期動画を設定
+onMounted(() => {
+    playFirstVideo();
+});
+
+// 動画を再生する関数
+function playVideo(videoIndex) {
+    currentVideoUrl.value = videoUrls.value[videoIndex];
 }
 
-// URLから動画の開始時間・終了時間を取得する
-function getVideoLength(title, URL) {
-    const queryString = URL.split('?')[1]
-    const paramArray = queryString.split('&')
-    var params = {
-        'title': title,
-        'URL': URL.split('?')[0] + "?autoplay=1",
-        'raw_URL': URL
+// 最初の動画を再生する関数
+function playFirstVideo() {
+    if (videoUrls.value.length > 0) {
+        video = videoUrls.value[0];
     }
-    paramArray.forEach((param) => {
-        var keyValue = param.split('=')
-        var key = decodeURIComponent(keyValue[0])
-        var value = decodeURIComponent(keyValue[1])
-        params[key] = value
-    })
-    if ('v' in params) {
-        params['URL'] = 'https://www.youtube.com/embed/' + params['v']
-    }
-    return params
 }
 
+//感情ボタンクリックするとバックに送る
 export default defineComponent({
     name: "sendPlaylistID",
     data() {
@@ -340,32 +339,11 @@ export default defineComponent({
             id_chill:   data.chill,
             id_fight:   data.fight,
             id_like:    data.like,
-            id_etc:     data.etc,
-            // 初期状態の動画リスト
-            videoUrls: {
-                "ヨルシカ - ブレーメン（OFFICIAL VIDEO）": "https://www.youtube.com/embed/oy6MDr6I6rM?start=10&end=20",
-                "ヨルシカ - 斜陽": "https://www.youtube.com/embed/bqigIHMComE?start=10&end=20",
-                "Mrs. GREEN APPLE - 青と夏": "https://www.youtube.com/embed/m34DPnRUfMU?start=10&end=20",
-            },
-            currentIndex: 1
+            id_etc:     data.etc
         }
     },
-    computed: {
-        currentVideoUrl() {
-            const videoData = convertVideoList(this.videoUrls)
-            console.log(videoData)
-            return videoData[this.currentIndex]['URL']
-        },
-    },
     methods: {
-        // 数曲後の情報を示す(はみ出したら、最初にループする)
-        displayOtherSongTitle(number) {
-            const videoData = convertVideoList(this.videoUrls)
-            const videoCount = videoData.length
-            //console.log("kk", videoData[(this.currentIndex + number) % videoCount])
-            return videoData[(this.currentIndex + number) % videoCount]['title']
-        },
-        async click(playlistid) {
+        async click(playlistID) {
             // プレイリストIDを送る処理を書く
 
             // これはWebサイトのHeader情報(変えないほうがいい)
@@ -380,12 +358,16 @@ export default defineComponent({
                 url: "http://localhost:8000/api/playlistid",
                 headers,
                 data: {
-                    playlistID: playlistid,
+                    playlistID: playlistID,
                 },
             };
-            const res = await axios.request(config);
-            console.log(Object.values(res.data));
-            this.videoUrls = Object.values(res.data);
+
+            try {
+                const res = await axios.request(config);
+                console.log(res);
+            } catch (error) {
+                throw error;
+            }
         }
     },
 });

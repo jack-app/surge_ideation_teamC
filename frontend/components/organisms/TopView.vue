@@ -1,5 +1,5 @@
 <script setup>
-  import TopbarUI from '@/components/molecules/Topbar.vue';
+  import TopbarUI from '@/components/molecules/TopBar.vue';
   import ToppageUI from '@/components/molecules/App.vue';
 </script>
 

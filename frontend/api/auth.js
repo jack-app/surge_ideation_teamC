@@ -18,22 +18,13 @@ export default {
     config.url = permaLink + '/logout'
     config.method = 'post'
     config.data = JSON.parse(localStorage.getItem('data'))
-    try {
-      const res = await axios.request(config)
-    } catch (error) {
-      throw error
-    }
+    await axios.request(config)
   },
   googleauth: async () => {
     config.url = permaLink + '/googleauth'
     config.method = 'get'
     console.log(config)
-    try {
-      const res = await axios.request(config)
-      console.log(res.data)
-      return res
-    } catch (error) {
-      throw error
-    }
+    const res = await axios.request(config)
+    return res
   }
 }

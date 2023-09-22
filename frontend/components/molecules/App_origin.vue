@@ -169,37 +169,6 @@ export default defineComponent({
 </script>
 
 <style>
-/* html:before,
-html:after,
-body:before,
-body:after {
-  content: '';
-  background: #5b8299;
-  position: fixed;
-  display: block;
-  z-index: -1;
-}
-
-/* 上 */
-/* html:before {
-  height: 5px;
-  width: 100vw;
-  left: 0;
-  top: 0;
-  margin-top: 20px;
-  opacity: 0.5;
-}
-
-/* 右 */
-/* html:after {
-  width: 5px;
-  height: 100vh;
-  right: 0;
-  top: 0;
-  margin-right: 20px;
-  opacity: 0.5;
-}
-
 /* 下 */
 body:before {
   height: 5px;
@@ -219,7 +188,7 @@ body:after {
   margin-left: 20px;
   opacity: 0.5;
 }
-*/ */ html,
+html,
 body {
   overflow: hidden;
   font-family: Arial Black;

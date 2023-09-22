@@ -6,6 +6,10 @@ import vue from '@vitejs/plugin-vue'
 // https://vitejs.dev/config/
 export default defineConfig({
   plugins: [vue()],
+  build: {
+    outDir: 'dist',
+  },
+  base: '/surge_/ideation_teamC',
   resolve: {
     alias: {
       //vueのルートの簡略表現を定義
