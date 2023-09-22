@@ -1,7 +1,6 @@
 import { createRouter, createWebHistory } from 'vue-router'
-import Login from '@/components/organisms/LoginView.vue'
 import Top from '@/components/organisms/TopView.vue'
-import SignUp from '@/components/organisms/SignupView.vue'
+import GoogleAuth from '@/components/organisms/GoogleAuthView.vue'
 
 import { authorizeToken } from '@/router/guards'
 
@@ -19,12 +18,7 @@ const routes = [
   {
     path: '/login',
     name: 'Login',
-    component: Login
-  },
-  {
-    path: '/signup',
-    name: 'Signup',
-    component: SignUp
+    component: GoogleAuth
   },
 ]
 

@@ -1,7 +1,7 @@
 <template>
     <div class="logout">
         <div class="login-button">
-        <button class="btn btn-primary btn-lg" @click="logout()">サインアウト</button>
+        <button class="btn btn-danger btn-lg" @click="login()">YouTubeでログイン</button>
         </div>
     </div>
 </template>
@@ -10,13 +10,12 @@
   import { defineComponent } from 'vue';
   
   export default defineComponent({
-    name: 'LogoutButton',
+    name: 'LoginButton',
     //v-on(html上の特定の処理、ボタンクリックなど)をmethodsで記述
     methods: {
-        logout() {
-            //storeを介してログアウトを実行
-            return this.$store.dispatch('logout')
+        login() {
+            return this.$store.dispatch('googleauth')
         }
-      }
+    }
   })
 </script>
