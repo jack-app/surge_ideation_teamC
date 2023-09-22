@@ -16,5 +16,8 @@ export default {
       .then((res) => {
         window.location.href = res.data
       })
+      .catch((error) => {
+        throw error
+      })
   }
 }

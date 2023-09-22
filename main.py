@@ -1,6 +1,5 @@
 from fastapi import FastAPI, Request
 from pydantic import BaseModel
-from backend.search import get_video_id_all_playlist
 from oauth2client.client import OAuth2WebServerFlow
 from oauth2client.file import Storage
 from fastapi.responses import RedirectResponse
@@ -15,7 +14,7 @@ import firebase_admin
 from dotenv import load_dotenv
 import os
 
-from search import create_newplaylist, channel_playlist_ID
+from search import create_newplaylist, channel_playlist_ID, get_video_id_all_playlist
 
 # 環境変数を構成
 load_dotenv()
@@ -112,7 +111,7 @@ async def handle_auth_callback(request: Request, code: str, scope: str):
 
     # YouTubeアカウントが登録されていない
     if response['pageInfo']['totalResults'] < 1:
-        return RedirectResponse(url=FRONTEND_ORIGIN + "/login?error=YouTubeアカウントが存在しません")
+        return RedirectResponse(url=FRONTEND_ORIGIN + "/login?error=YouTubeチャンネルを作成してません")
 
     # チャンネルIDとチャンネル名・アイコンURLを取得
     channel_id = response["items"][0]["id"]
@@ -144,29 +143,19 @@ async def handle_auth_callback(request: Request, code: str, scope: str):
     }
     # プレイリストが既に存在するか確認する
     playlist_data = channel_playlist_ID(channel_id)
+    print(playlist_data)
     for key in playlistID.keys():
         songle_title = 'Surbe専用 - ' + key
         if songle_title in playlist_data.keys():
+            # 既にある時はそれを代入する
             playlistID[key] = playlist_data[songle_title]
-    for key in playlistID.keys():
-        if playlistID[key] == None:
+        else:
             # プレイリストが存在しない場合は新規作成する
             playlistID[key] = create_newplaylist('Surbe専用 - ' + key)
 
-    """
-    # 生成した各プレイリストIDをデータベースに登録する
-    doc_ref.update({
-        "happy":    "test",
-        "sad":      "test",
-        "chill":    "test",
-        "fight":    "test",
-        "like":     "test",
-        "etc":      "test"
-    })
-    """
-
     # リダイレクト
     query_params = {"id": channel_id, "name": channel_name, "icon": icon_url, "token": access_token}
+    query_params.update(playlistID)
     redirect_url = FRONTEND_ORIGIN + "/login?" + "&".join([f"{key}={value}" for key, value in query_params.items()])
     return RedirectResponse(url=redirect_url)
 

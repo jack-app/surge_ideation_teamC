@@ -331,33 +331,10 @@ function playFirstVideo() {
 //感情ボタンクリックするとバックに送る
 export default defineComponent({
     name: "sendPlaylistID",
+    data() {
+        console.log(this.$store)
+    },
     methods: {
-        async click1() {
-            // プレイリストIDを送る処理を書く
-
-            // これはWebサイトのHeader情報(変えないほうがいい)
-            const headers = {
-                "Access-Control-Allow-Origin": "*",
-                "Content-type": "application/json",
-            };
-
-            // Webサイトの中身のデータ部分
-            const config = {
-                method: "post",
-                url: "http://localhost:8000/api/playlistid",
-                headers,
-                data: {
-                    playlistID: "PLNG3n51ur1CeF29__IjcUS09_ME66_pVQ",
-                },
-            };
-
-            try {
-                const res = await axios.request(config);
-                console.log(res);
-            } catch (error) {
-                throw error;
-            }
-        },
         async click1() {
             // プレイリストIDを送る処理を書く
 

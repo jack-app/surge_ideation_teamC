@@ -188,6 +188,7 @@ def channel_playlist_ID(channelid):
     request = youtube.playlists().list(
         part="snippet,id",
         channelId=channelid,
+        maxResults=50,
     )
     response=request.execute()
     palylist_Id_list = list(map(lambda v : v['id'],response['items'] ))
