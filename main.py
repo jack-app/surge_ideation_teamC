@@ -1,15 +1,11 @@
 from fastapi import FastAPI, Request
 from pydantic import BaseModel
 from oauth2client.client import OAuth2WebServerFlow
-from oauth2client.file import Storage
 from fastapi.responses import RedirectResponse
 from googleapiclient.discovery import build
 
 import json
 import httplib2
-
-from firebase_admin import auth, credentials, firestore
-import firebase_admin
 
 from dotenv import load_dotenv
 import os
@@ -19,17 +15,6 @@ from search import create_newplaylist, channel_playlist_ID, get_video_id_all_pla
 # 環境変数を構成
 load_dotenv()
 FIRESTORE_API_KEY = os.getenv("FIRESTORE_API_KEY")
-
-"""
-# firebaseを構成
-cred = credentials.Certificate('./secret/firebase_secret.json')
-firebase_admin.initialize_app(cred)
-"""
-
-"""
-# firestoreデータベースを取得
-db = firestore.client()
-"""
 
 # from search import get_video_id_all_playlist
 from starlette.middleware.cors import CORSMiddleware # 追加
@@ -117,15 +102,6 @@ async def handle_auth_callback(request: Request, code: str, scope: str):
     channel_id = response["items"][0]["id"]
     channel_name = response["items"][0]["snippet"]["title"]
     icon_url = response["items"][0]["snippet"]["thumbnails"]["high"]["url"]
-
-    """
-    # チャンネルIDとチャンネル名・アイコンURLをデータベースに保存
-    doc_ref = db.collection("youtube").document(channel_id)
-    doc_ref.set({
-        "name": channel_name,
-        "icon": icon_url
-        })
-    """
 
     # token.pickleファイルを生成する
     import pickle

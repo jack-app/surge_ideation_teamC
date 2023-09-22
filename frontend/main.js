@@ -8,8 +8,8 @@ import store from '@/store/index';
 const app = createApp(App);
 
 //Vueインダクタンスを構成
-app.use(router);
-app.use(store);
+//app.use(router);
+//app.use(store);
 
 //Vueアプリのインスタンスを作成
 app.mount('#app')

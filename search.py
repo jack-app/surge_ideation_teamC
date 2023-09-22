@@ -145,7 +145,7 @@ def get_video_id_all_playlist(playlistId):
     video_title_list = []
     request = youtube.playlistItems().list(
         part="snippet",
-        maxResults=5,
+        maxResults=50,
         playlistId=playlistId,
         fields="nextPageToken,items/snippet"
     )
