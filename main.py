@@ -26,13 +26,27 @@ firebase_admin.initialize_app(cred)
 
 # firestoreデータベースを取得
 db = firestore.client()
+# from search import get_video_id_all_playlist
+from starlette.middleware.cors import CORSMiddleware # 追加
 
-# FastAPIを構成
 app = FastAPI()
 
 # オリジン情報を読み込む
 FRONTEND_ORIGIN = "http://localhost:8080"
 BACKEND_ORIGIN  = "http://127.0.0.1:8000"
+
+# CORSを回避するために追加（今回の肝）
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_credentials=True,   # 追記により追加
+    allow_methods=["*"],      # 追記により追加
+    allow_headers=["*"]       # 追記により追加
+)
+
+#playlistの通信
+class PlaylistID(BaseModel):
+    playlistID: str
 
 # クライアント情報を読み込む
 CLIENT_SECRETS_FILE = "./secret/youtube_secret.json"
@@ -125,3 +139,10 @@ async def handle_auth_callback(request: Request, code: str, scope: str):
     query_params = {"id": channel_id, "name": channel_name, "icon": icon_url, "token": access_token}
     redirect_url = FRONTEND_ORIGIN + "/login?" + "&".join([f"{key}={value}" for key, value in query_params.items()])
     return RedirectResponse(url=redirect_url)
+
+# 動画タイトルを検索する
+"""
+@app.post("/api/youtube/search")
+async def search(data: Search):
+    return emotion(search, emotion)
+"""
