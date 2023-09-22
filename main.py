@@ -98,8 +98,6 @@ async def handle_auth_callback(request: Request, code: str, scope: str):
     # チャンネルIDとチャンネル名・アイコンURLを取得
     channel_id = response["items"][0]["id"]
     channel_name = response["items"][0]["snippet"]["title"]
-    print(channel_id)
-    print(channel_name)
     icon_url = response["items"][0]["snippet"]["thumbnails"]["high"]["url"]
 
     # チャンネルIDとチャンネル名・アイコンURLをデータベースに保存

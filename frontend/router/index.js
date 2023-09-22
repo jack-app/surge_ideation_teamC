@@ -1,7 +1,6 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import Top from '@/components/organisms/TopView.vue'
 import GoogleAuth from '@/components/organisms/GoogleAuthView.vue'
-//import LoginSuccess from '@/components/molecules/LoginSuccess.vue'
 
 import { authorizeToken } from '@/router/guards'
 
