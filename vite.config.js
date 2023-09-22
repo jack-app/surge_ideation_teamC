@@ -11,7 +11,7 @@ config({ path: '.env.dev' })
 export default defineConfig({
   plugins: [vue(), vueEnvPlugin()],
   build: {
-    outDir: 'docs',
+    outDir: 'dist',
   },
   resolve: {
     alias: {
