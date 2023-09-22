@@ -117,4 +117,4 @@ def create_newplaylist():
     return playlists_insert_response["id"]
 
 if __name__ == "__main__":
-    create_newplaylist()
+    print(create_newplaylist())

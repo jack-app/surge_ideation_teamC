@@ -68,7 +68,7 @@ def video_id(response):
     video_id_title.extend(list(map(lambda v : v['snippet']['title'],response['items'])))
     result = dict(zip(video_id_title,video_id_list))
     return result
-# titleとurlを渡せばsongleにあるサビだけ部分のurlを返す。
+# titleとurlを渡せばsongleにあるsongleあるurlだけ部分のurlを返す。
 def songle_check(titileurl):
     
     Result={}
@@ -78,7 +78,7 @@ def songle_check(titileurl):
         else :
             None
     return Result 
-
+# songleからsongのサビurlを取得
 def songle_se(Result):
     Result=songle_check(Result)
     surbeurl = {}
@@ -103,8 +103,14 @@ def songle(query):
      data=video_url(songle_search(query))
      response=songle_se(data)
      return response
+
+def songle_in_url(query):
+    data = video_url(songle_search(query))
+    response=songle_check(data)
+    return response
+
 # q = input('好きなアーティストを入力してください')
-# pprint.pprint(songle(q))
+# pprint.pprint(songle_in_url(q))
 
 
 
@@ -155,7 +161,7 @@ def get_video_id_all_playlist(playlistId):
     video_title_list.extend(list(map(lambda v : v['snippet']['title'],response['items'])))
     result = dict(zip(video_title_list,video_id_list))
     return result
-# playlistid　でサビ部分とurlのdivtが返る
+# playlistid　でサビ部分とurlのdictが返る
 def get_video_id_all_playlist_in_songle(playlistId):
     result=get_video_id_all_playlist(playlistId)
     subi=songle_se(result)
@@ -201,7 +207,8 @@ API_SERVICE_NAME = "youtube"
 API_VERSION = "v3"
 SCOPES = ["https://www.googleapis.com/auth/youtube"]
 CLIENT_SECRETS_FILE = 'client_secret_44130362195-7j4dnus14loc9s3r30pjhmfjv9fqs19j.apps.googleusercontent.com.json'
-PLAYLIST_ID = "PLcG4kHrgRmgm5C_i5yjzOcBvuD1mymeyY"
+
+PLAYLIST_ID='PLcG4kHrgRmgm5dIUofGqC1hHS8dzx6iF6'
 
 KEYWORD_ARRAY =[]
 KEYWORD_ARRAY.append('')
@@ -232,8 +239,7 @@ def youtube_setup():
 
     return build(API_SERVICE_NAME, API_VERSION, credentials=creds)
 
-def search_by_keywords(keywards):
-    video_id_list=[]
+
     
 
 def searchVideosByKeywords(youtube,keywords,strLastWeek):
@@ -256,7 +262,7 @@ def searchVideosByKeywords(youtube,keywords,strLastWeek):
 
 # youtubeにvideoIDのリストをpalylistの中に入っているか入っていないかを判定して、動画idを入れることができる。
 
-def insertVideosIntoPlaylist(youtube,playlistItem_list_response,videoIdArray):
+def insertVideosIntoPlaylist(youtube,playlistItem_list_response,videoIdArray,PLAYLIST_ID):
     videoAlready = []
     for item in playlistItem_list_response["items"]:
         videoAlready.append(item["snippet"]["resourceId"]["videoId"])
@@ -276,7 +282,7 @@ def insertVideosIntoPlaylist(youtube,playlistItem_list_response,videoIdArray):
             )
             ).execute()
 
-def main():
+def main(PLAYLIST_ID):
     
     youtube = youtube_setup()
 
@@ -297,14 +303,14 @@ def main():
 
     print("done")
 # channelに空のplaylist1を作る
-def create_newplaylist():
+def create_newplaylist(titlename):
     youtube=youtube_setup()
     # This code creates a new, private playlist in the authorized user's channel.
     playlists_insert_response = youtube.playlists().insert(
     part="snippet,status",
     body=dict(
         snippet=dict(
-        title="Test Playlist",
+        title=titlename,
         description="A private playlist created with the YouTube API v3"
         ),
         status=dict(
@@ -313,3 +319,19 @@ def create_newplaylist():
     )
     ).execute()
     return playlists_insert_response["id"]
+
+def search_by_keywords(keywards):
+    PLAYLIST_ID=create_newplaylist(keywards)
+    url=songle_in_url(keywards)
+    youtube=youtube_setup()
+    playlistItem_list_response = youtube.playlistItems().list(
+        part="snippet",
+        playlistId=PLAYLIST_ID,
+        maxResults = 50,
+    ).execute()
+    urls = list(url.values())
+    urls = map(lambda v : v.replace("https://www.youtube.com/watch?v=",'',1),urls)
+    insertVideosIntoPlaylist(youtube,playlistItem_list_response,urls,PLAYLIST_ID)
+    return print('done')
+
+search_by_keywords('yuri')
