@@ -355,7 +355,7 @@ export default defineComponent({
             // Webサイトの中身のデータ部分
             const config = {
                 method: "post",
-                url: "http://localhost:8000/api/playlistid",
+                url: import.meta.env.VITE_APP_BACKEND_URL + "/api/playlistid",
                 headers,
                 data: {
                     playlistID: playlistID,

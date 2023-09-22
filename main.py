@@ -10,25 +10,20 @@ import httplib2
 from dotenv import load_dotenv
 import os
 
-from search import create_newplaylist, channel_playlist_ID, get_video_id_all_playlist
-
-# 環境変数を構成
-load_dotenv()
-FIRESTORE_API_KEY = os.getenv("FIRESTORE_API_KEY")
-
-# from search import get_video_id_all_playlist
+from backend.search import create_newplaylist, channel_playlist_ID, get_video_id_all_playlist
 from starlette.middleware.cors import CORSMiddleware # 追加
 
 app = FastAPI()
 
-# オリジン情報を読み込む
-FRONTEND_ORIGIN = "http://localhost:8080"
-BACKEND_ORIGIN  = "http://127.0.0.1:8000"
+# エンドポイントを環境変数から読み込む
+load_dotenv('.env.dev')
+FORNTEND_ENDPOINT = os.getenv('VUE_FRONTEND_URL')
+BACKEND_ENDPOINT  = os.getenv('VITE_APP_BACKEND_URL')
 
 # CORSを回避するために追加（今回の肝）
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],
+    allow_origins=[FORNTEND_ENDPOINT],
     allow_credentials=True,   # 追記により追加
     allow_methods=["*"],      # 追記により追加
     allow_headers=["*"]       # 追記により追加
@@ -47,7 +42,7 @@ with open(CLIENT_SECRETS_FILE, 'r') as json_file:
 YOUTUBE_READ_WRITE_SCOPE = "https://www.googleapis.com/auth/youtube"
 YOUTUBE_API_SERVICE_NAME = "youtube"
 YOUTUBE_API_VERSION = "v3"
-REDIRECT_URI = BACKEND_ORIGIN + "/api/callback"
+REDIRECT_URI = BACKEND_ENDPOINT + "/api/callback"
 
 # flowオブジェクトを記載
 flow = OAuth2WebServerFlow(
@@ -96,7 +91,7 @@ async def handle_auth_callback(request: Request, code: str, scope: str):
 
     # YouTubeアカウントが登録されていない
     if response['pageInfo']['totalResults'] < 1:
-        return RedirectResponse(url=FRONTEND_ORIGIN + "/login?error=YouTubeチャンネルを作成してません")
+        return RedirectResponse(url=FORNTEND_ENDPOINT + "/login?error=YouTubeチャンネルを作成してません")
 
     # チャンネルIDとチャンネル名・アイコンURLを取得
     channel_id = response["items"][0]["id"]
@@ -132,7 +127,7 @@ async def handle_auth_callback(request: Request, code: str, scope: str):
     # リダイレクト
     query_params = {"id": channel_id, "name": channel_name, "icon": icon_url, "token": access_token}
     query_params.update(playlistID)
-    redirect_url = FRONTEND_ORIGIN + "/login?" + "&".join([f"{key}={value}" for key, value in query_params.items()])
+    redirect_url = FORNTEND_ENDPOINT + "/login?" + "&".join([f"{key}={value}" for key, value in query_params.items()])
     return RedirectResponse(url=redirect_url)
 
 # 動画タイトルを検索する

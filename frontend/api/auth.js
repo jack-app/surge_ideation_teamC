@@ -11,17 +11,16 @@ const config = {
   headers,
   data: null
 }
-const permaLink = 'http://localhost:8000/api'
 
 export default {
   logout: async () => {
-    config.url = permaLink + '/logout'
+    config.url = import.meta.env.VITE_APP_BACKEND_URL + '/api/logout'
     config.method = 'post'
     config.data = JSON.parse(localStorage.getItem('data'))
     await axios.request(config)
   },
   googleauth: async () => {
-    config.url = permaLink + '/googleauth'
+    config.url = import.meta.env.VITE_APP_BACKEND_URL + '/api/googleauth'
     config.method = 'get'
     console.log(config)
     const res = await axios.request(config)
