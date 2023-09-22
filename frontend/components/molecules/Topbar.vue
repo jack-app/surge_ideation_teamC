@@ -9,6 +9,7 @@
             <div class="leftitem-fix">
                 <div class="icon-img"><img class="user-picture" :src=iconSrc /></div>
                 <div class="user-name">{{ userName }}</div>
+                
             </div>
             <SearchForm />
             <div class="button-fix"><LogoutButton /></div>
