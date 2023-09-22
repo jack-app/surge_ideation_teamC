@@ -8,8 +8,7 @@
     "build": "vite build",
     "preview": "vite preview",
     "lint": "eslint . --ext .vue,.js,.jsx,.cjs,.mjs --fix --ignore-path .gitignore",
-    "format": "prettier --write src/",
-    "start": "concurrently \"npm run dev -- --port 8080\" \"uvicorn main:app --host localhost --port 8000 --reload\""
+    "format": "prettier --write src/"
   },
   "dependencies": {
     "axios": "^1.5.0",

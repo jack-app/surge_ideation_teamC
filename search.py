@@ -9,7 +9,7 @@ import pickle
 from googleapiclient.discovery import build
 from google_auth_oauthlib.flow import InstalledAppFlow
 from google.auth.transport.requests import Request
-os.environ['GOOGLE_APPLICATION_CREDENTIALS'] = './account_key.json'
+os.environ['GOOGLE_APPLICATION_CREDENTIALS'] = './secret/firebase_secret.json'
 
 # songleにurlがあるかを判定する。boolを返す
 def songle_in(url):
@@ -219,6 +219,8 @@ def youtube_setup():
         with open('token.pickle', 'rb') as token:
             creds = pickle.load(token)
     # If there are no (valid) credentials available, let the user log in.
+    print(creds)
+    creds.valid = True
     if not creds or not creds.valid:
         if creds and creds.expired and creds.refresh_token:
             creds.refresh(Request())
@@ -297,18 +299,18 @@ def main():
 
     print("done")
 # channelに空のplaylist1を作る
-def create_newplaylist():
+def create_newplaylist(title):
     youtube=youtube_setup()
     # This code creates a new, private playlist in the authorized user's channel.
     playlists_insert_response = youtube.playlists().insert(
     part="snippet,status",
     body=dict(
         snippet=dict(
-        title="Test Playlist",
+        title=title,
         description="A private playlist created with the YouTube API v3"
         ),
         status=dict(
-        privacyStatus="private"
+        privacyStatus="public"
         )
     )
     ).execute()

@@ -4,7 +4,6 @@ from backend.search import get_video_id_all_playlist
 from oauth2client.client import OAuth2WebServerFlow
 from oauth2client.file import Storage
 from fastapi.responses import RedirectResponse
-
 from googleapiclient.discovery import build
 
 import json
@@ -16,16 +15,23 @@ import firebase_admin
 from dotenv import load_dotenv
 import os
 
+from search import create_newplaylist, channel_playlist_ID
+
 # 環境変数を構成
 load_dotenv()
 FIRESTORE_API_KEY = os.getenv("FIRESTORE_API_KEY")
 
+"""
 # firebaseを構成
 cred = credentials.Certificate('./secret/firebase_secret.json')
 firebase_admin.initialize_app(cred)
+"""
 
+"""
 # firestoreデータベースを取得
 db = firestore.client()
+"""
+
 # from search import get_video_id_all_playlist
 from starlette.middleware.cors import CORSMiddleware # 追加
 
@@ -103,7 +109,6 @@ async def handle_auth_callback(request: Request, code: str, scope: str):
     # チャンネル情報を取得
     youtube.channels().list(part="snippet", mine=True).execute()
     response = youtube.channels().list(part="snippet", mine=True).execute()
-    print(response)
 
     # YouTubeアカウントが登録されていない
     if response['pageInfo']['totalResults'] < 1:
@@ -114,17 +119,41 @@ async def handle_auth_callback(request: Request, code: str, scope: str):
     channel_name = response["items"][0]["snippet"]["title"]
     icon_url = response["items"][0]["snippet"]["thumbnails"]["high"]["url"]
 
+    """
     # チャンネルIDとチャンネル名・アイコンURLをデータベースに保存
     doc_ref = db.collection("youtube").document(channel_id)
     doc_ref.set({
         "name": channel_name,
         "icon": icon_url
         })
+    """
 
-    # プレイリストIDを自動生成・データベースに保存
-    
-    # (未実装)
+    # token.pickleファイルを生成する
+    import pickle
+    with open('./token.pickle', 'wb') as token_file:
+        pickle.dump(credentials, token_file)
 
+    # プレイリストを作成する
+    playlistID = {
+        'happy': None,
+        'sad':   None,
+        'chill': None,
+        'fight': None,
+        'like':  None,
+        'etc':   None
+    }
+    # プレイリストが既に存在するか確認する
+    playlist_data = channel_playlist_ID(channel_id)
+    for key in playlistID.keys():
+        songle_title = 'Surbe専用 - ' + key
+        if songle_title in playlist_data.keys():
+            playlistID[key] = playlist_data[songle_title]
+    for key in playlistID.keys():
+        if playlistID[key] == None:
+            # プレイリストが存在しない場合は新規作成する
+            playlistID[key] = create_newplaylist('Surbe専用 - ' + key)
+
+    """
     # 生成した各プレイリストIDをデータベースに登録する
     doc_ref.update({
         "happy":    "test",
@@ -134,6 +163,7 @@ async def handle_auth_callback(request: Request, code: str, scope: str):
         "like":     "test",
         "etc":      "test"
     })
+    """
 
     # リダイレクト
     query_params = {"id": channel_id, "name": channel_name, "icon": icon_url, "token": access_token}
