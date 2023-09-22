@@ -9,7 +9,6 @@ export default defineConfig({
   build: {
     outDir: 'dist',
   },
-  base: '/surge_/ideation_teamC',
   resolve: {
     alias: {
       //vueのルートの簡略表現を定義
