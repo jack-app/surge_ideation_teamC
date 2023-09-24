@@ -54,9 +54,10 @@ document.addEventListener("touchmove", disableScroll, { passive: false });
                             frameborder="0"
                         ></iframe>
                     </div>
-                    <span id="play"></span>
                 </div>
             </section>
+
+            <div id="script"></div>
 
             <section id="recommend">
                 <h1 class="if">next...</h1>
@@ -65,9 +66,7 @@ document.addEventListener("touchmove", disableScroll, { passive: false });
             </section>
 
             <div class="player">
-                <h1 class="feel">feeling list</h1>
                 <button class="play" @click="playFirstVideo">▶</button>
-                <button class="fav">♡</button>
             </div>
         </div>
     </body>
@@ -299,6 +298,46 @@ h1 {
 </style>
 
 <script>
+/*
+  // Load the IFrame Player API code asynchronously.
+  var tag = document.createElement('script');
+  tag.src = "https://www.youtube.com/player_api";
+  var firstScriptTag = document.getElementsByTagName('script')[0];
+  firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
+
+  // Replace the 'ytplayer' element with an <iframe> and
+  // YouTube player after the API code downloads.
+  var player = new YT.Player('ytplayer', {
+      height: '360',
+      width: '640',
+      videoId: 'M7lc1UVf-VE',
+      events: {
+        'onReady': onPlayerReady
+      }
+    });
+
+// 4. The API will call this function when the video player is ready.
+function onPlayerReady(event) {
+console.log("okkkkk")
+  event.target.playVideo();
+}
+
+// 5. The API calls this function when the player's state changes.
+//    The function indicates that when playing a video (state=1),
+//    the player should play for six seconds and then stop.
+var done = false;
+function onPlayerStateChange(event) {
+  if (event.data == YT.PlayerState.PLAYING && !done) {
+    setTimeout(stopVideo, 6000);
+    done = true;
+  }
+}
+
+function stopVideo() {
+  player.stopVideo();
+}
+*/
+
 
 // ビデオリストから開始時間や終了時間形式に変換する
 function convertVideoList(videoUrls) {
@@ -315,7 +354,7 @@ function getVideoLength(title, URL) {
     const paramArray = queryString.split('&')
     var params = {
         'title': title,
-        'URL': URL.split('?')[0] + "?autoplay=1",
+        'URL': URL + "&autoplay=1",
         'raw_URL': URL
     }
     paramArray.forEach((param) => {
@@ -349,6 +388,9 @@ export default defineComponent({
             },
             currentIndex: 1
         }
+    },
+    mounted() {
+        onYouTubePlayerAPIReady()
     },
     computed: {
         currentVideoUrl() {
