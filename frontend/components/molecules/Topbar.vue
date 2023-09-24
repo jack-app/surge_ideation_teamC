@@ -1,6 +1,6 @@
 <script setup>
   import LogoutButton from '@/components/molecules/LogoutButton.vue';
-  const data = JSON.parse(localStorage.getItem("data"))
+  import SearchForm from '@/components/molecules/SearchForm.vue';
 </script>
 
 <template>
@@ -9,7 +9,9 @@
             <div class="leftitem-fix">
                 <div class="icon-img"><img class="user-picture" :src=iconSrc /></div>
                 <div class="user-name">{{ userName }}</div>
+                
             </div>
+            <SearchForm />
             <div class="button-fix"><LogoutButton /></div>
         </div>
     </div>

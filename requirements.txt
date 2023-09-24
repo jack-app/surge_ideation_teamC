@@ -56,5 +56,3 @@ typing_extensions==4.7.1
 uritemplate==4.1.1
 urllib3==1.26.16
 uvicorn==0.23.2
-
-dotenv

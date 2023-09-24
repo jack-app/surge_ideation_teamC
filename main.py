@@ -1,44 +1,29 @@
 from fastapi import FastAPI, Request
 from pydantic import BaseModel
-from backend.search import get_video_id_all_playlist
 from oauth2client.client import OAuth2WebServerFlow
-from oauth2client.file import Storage
 from fastapi.responses import RedirectResponse
-
 from googleapiclient.discovery import build
 
 import json
 import httplib2
 
-from firebase_admin import auth, credentials, firestore
-import firebase_admin
-
 from dotenv import load_dotenv
 import os
 
-# 環境変数を構成
-load_dotenv()
-FIRESTORE_API_KEY = os.getenv("FIRESTORE_API_KEY")
-
-# firebaseを構成
-cred = credentials.Certificate('./secret/firebase_secret.json')
-firebase_admin.initialize_app(cred)
-
-# firestoreデータベースを取得
-db = firestore.client()
-# from search import get_video_id_all_playlist
+from backend.search import create_newplaylist, channel_playlist_ID, get_video_id_all_playlist
 from starlette.middleware.cors import CORSMiddleware # 追加
 
 app = FastAPI()
 
-# オリジン情報を読み込む
-FRONTEND_ORIGIN = "http://localhost:8080"
-BACKEND_ORIGIN  = "http://127.0.0.1:8000"
+# エンドポイントを環境変数から読み込む
+load_dotenv('.env.dev')
+FORNTEND_ENDPOINT = os.getenv('VUE_FRONTEND_URL')
+BACKEND_ENDPOINT  = os.getenv('VITE_APP_BACKEND_URL')
 
 # CORSを回避するために追加（今回の肝）
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],
+    allow_origins=[FORNTEND_ENDPOINT],
     allow_credentials=True,   # 追記により追加
     allow_methods=["*"],      # 追記により追加
     allow_headers=["*"]       # 追記により追加
@@ -57,7 +42,7 @@ with open(CLIENT_SECRETS_FILE, 'r') as json_file:
 YOUTUBE_READ_WRITE_SCOPE = "https://www.googleapis.com/auth/youtube"
 YOUTUBE_API_SERVICE_NAME = "youtube"
 YOUTUBE_API_VERSION = "v3"
-REDIRECT_URI = BACKEND_ORIGIN + "/api/callback"
+REDIRECT_URI = BACKEND_ENDPOINT + "/api/callback"
 
 # flowオブジェクトを記載
 flow = OAuth2WebServerFlow(
@@ -103,41 +88,46 @@ async def handle_auth_callback(request: Request, code: str, scope: str):
     # チャンネル情報を取得
     youtube.channels().list(part="snippet", mine=True).execute()
     response = youtube.channels().list(part="snippet", mine=True).execute()
-    print(response)
 
     # YouTubeアカウントが登録されていない
     if response['pageInfo']['totalResults'] < 1:
-        return RedirectResponse(url=FRONTEND_ORIGIN + "/login?error=YouTubeアカウントが存在しません")
+        return RedirectResponse(url=FORNTEND_ENDPOINT + "/login?error=YouTubeチャンネルを作成してません")
 
     # チャンネルIDとチャンネル名・アイコンURLを取得
     channel_id = response["items"][0]["id"]
     channel_name = response["items"][0]["snippet"]["title"]
     icon_url = response["items"][0]["snippet"]["thumbnails"]["high"]["url"]
 
-    # チャンネルIDとチャンネル名・アイコンURLをデータベースに保存
-    doc_ref = db.collection("youtube").document(channel_id)
-    doc_ref.set({
-        "name": channel_name,
-        "icon": icon_url
-        })
+    # token.pickleファイルを生成する
+    import pickle
+    with open('./token.pickle', 'wb') as token_file:
+        pickle.dump(credentials, token_file)
 
-    # プレイリストIDを自動生成・データベースに保存
-    
-    # (未実装)
-
-    # 生成した各プレイリストIDをデータベースに登録する
-    doc_ref.update({
-        "happy":    "test",
-        "sad":      "test",
-        "chill":    "test",
-        "fight":    "test",
-        "like":     "test",
-        "etc":      "test"
-    })
+    # プレイリストを作成する
+    playlistID = {
+        'happy': None,
+        'sad':   None,
+        'chill': None,
+        'fight': None,
+        'like':  None,
+        'etc':   None
+    }
+    # プレイリストが既に存在するか確認する
+    playlist_data = channel_playlist_ID(channel_id)
+    print(playlist_data)
+    for key in playlistID.keys():
+        songle_title = 'Surbe専用 - ' + key
+        if songle_title in playlist_data.keys():
+            # 既にある時はそれを代入する
+            playlistID[key] = playlist_data[songle_title]
+        else:
+            # プレイリストが存在しない場合は新規作成する
+            playlistID[key] = create_newplaylist('Surbe専用 - ' + key)
 
     # リダイレクト
     query_params = {"id": channel_id, "name": channel_name, "icon": icon_url, "token": access_token}
-    redirect_url = FRONTEND_ORIGIN + "/login?" + "&".join([f"{key}={value}" for key, value in query_params.items()])
+    query_params.update(playlistID)
+    redirect_url = FORNTEND_ENDPOINT + "/login?" + "&".join([f"{key}={value}" for key, value in query_params.items()])
     return RedirectResponse(url=redirect_url)
 
 # 動画タイトルを検索する

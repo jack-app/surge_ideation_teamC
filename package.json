@@ -8,16 +8,17 @@
     "build": "vite build",
     "preview": "vite preview",
     "lint": "eslint . --ext .vue,.js,.jsx,.cjs,.mjs --fix --ignore-path .gitignore",
-    "format": "prettier --write src/",
-    "start": "concurrently \"npm run dev -- --port 8080\" \"uvicorn main:app --host localhost --port 8000 --reload\""
+    "format": "prettier --write src/"
   },
   "dependencies": {
     "axios": "^1.5.0",
-    "express": "^4.18.2",
     "concurrently": "^8.2.1",
     "cors": "^2.8.5",
+    "express": "^4.18.2",
+    "vite-plugin-vue-env": "^1.0.6",
     "vue": "^3.3.4",
     "vue-router": "^4.2.4",
+    "vue-youtube-vue-3": "^1.5.0",
     "vuex": "^4.1.0"
   },
   "devDependencies": {
