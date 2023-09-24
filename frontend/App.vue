@@ -61,7 +61,6 @@ body:after {
 
 html,
 body {
-  overflow: hidden;
   font-family: Arial Black;
 }
 

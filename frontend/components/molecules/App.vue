@@ -1,17 +1,12 @@
 <script setup>
-import { defineComponent } from "vue";
+import { VueElement, defineComponent } from "vue";
 
 // 非同期通信のモジュールをインポート
 // 無かったら、「npm install axios」をコマンドラインで実行
 import axios from "axios";
 
-// スワイプでスクロールさせない
-function disableScroll(event) {
-    event.preventDefault();
-}
-
 // イベントと関数を紐付け
-document.addEventListener("touchmove", disableScroll, { passive: false });
+//document.addEventListener("touchmove", disableScroll, { passive: false });
 </script>
 
 <template>
@@ -49,25 +44,20 @@ document.addEventListener("touchmove", disableScroll, { passive: false });
                         <iframe
                             id="player"
                             width="80%"
-                            height="60%"
+                            height="100%"
                             :src="currentVideoUrl"
                             frameborder="0"
                         ></iframe>
                     </div>
                 </div>
             </section>
-
-            <div id="script"></div>
-
             <section id="recommend">
                 <h1 class="if">next...</h1>
-                <p class="music2">{{ displayOtherSongTitle(1) }}</p>
-                <p class="music2">{{ displayOtherSongTitle(2) }}</p>
+                <button class="music2" @click="changeSong(1)">{{ displayOtherSongTitle(1) }}</button>
+                <button class="music2" @click="changeSong(2)">{{ displayOtherSongTitle(2) }}</button>
+                <button class="music2" @click="changeSong(3)">{{ displayOtherSongTitle(3) }}</button>
+                <button class="music2" @click="changeSong(4)">{{ displayOtherSongTitle(4) }}</button>
             </section>
-
-            <div class="player">
-                <button class="play" @click="playFirstVideo">▶</button>
-            </div>
         </div>
     </body>
 </template>
@@ -125,8 +115,8 @@ body:after {
 }
 html,
 body {
-    overflow: hidden;
     font-family: Arial Black;
+    font-weight: bold;
 }
 
 h1,
@@ -140,22 +130,25 @@ h1 {
 }
 
 .title {
-    margin-top: 10%;
+    margin-top: 0;
     font-size: xx-large;
     text-align: center;
     margin-bottom: 4%;
 }
 
 .content {
-    width: 100%;
     height: 100%;
+    width: 390px;
     position: absolute;
     margin-top: 5%;
     margin-left: auto;
     margin-right: auto;
     border: #000;
 }
-
+iframe {
+    height: 200px;
+    border-radius: 20px;
+}
 .choice {
     flex-wrap: wrap;
 }
@@ -256,10 +249,10 @@ h1 {
 }
 
 .music2 {
-    text-align: center;
-    width: 50%;
+    text-align: left;
+    width: 80%;
     margin-top: 1%;
-    margin-left: 25%;
+    margin-left: 10%;
     margin-bottom: 2%;
     padding: 1%;
     background-color: #e9af9d;
@@ -298,47 +291,6 @@ h1 {
 </style>
 
 <script>
-/*
-  // Load the IFrame Player API code asynchronously.
-  var tag = document.createElement('script');
-  tag.src = "https://www.youtube.com/player_api";
-  var firstScriptTag = document.getElementsByTagName('script')[0];
-  firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
-
-  // Replace the 'ytplayer' element with an <iframe> and
-  // YouTube player after the API code downloads.
-  var player = new YT.Player('ytplayer', {
-      height: '360',
-      width: '640',
-      videoId: 'M7lc1UVf-VE',
-      events: {
-        'onReady': onPlayerReady
-      }
-    });
-
-// 4. The API will call this function when the video player is ready.
-function onPlayerReady(event) {
-console.log("okkkkk")
-  event.target.playVideo();
-}
-
-// 5. The API calls this function when the player's state changes.
-//    The function indicates that when playing a video (state=1),
-//    the player should play for six seconds and then stop.
-var done = false;
-function onPlayerStateChange(event) {
-  if (event.data == YT.PlayerState.PLAYING && !done) {
-    setTimeout(stopVideo, 6000);
-    done = true;
-  }
-}
-
-function stopVideo() {
-  player.stopVideo();
-}
-*/
-
-
 // ビデオリストから開始時間や終了時間形式に変換する
 function convertVideoList(videoUrls) {
     var videoList = []
@@ -354,13 +306,16 @@ function getVideoLength(title, URL) {
     const paramArray = queryString.split('&')
     var params = {
         'title': title,
-        'URL': URL + "&autoplay=1",
+        'URL': URL + "&autoplay=1&mute=0",
         'raw_URL': URL
     }
     paramArray.forEach((param) => {
         var keyValue = param.split('=')
         var key = decodeURIComponent(keyValue[0])
         var value = decodeURIComponent(keyValue[1])
+        if (key === 'start' || key === 'end') {
+            value = parseInt(value)
+        }
         params[key] = value
     })
     if ('v' in params) {
@@ -369,11 +324,22 @@ function getVideoLength(title, URL) {
     return params
 }
 
+// 曲のタイマーを設定する
+// const eventBus = new Vue();
+// function countSongTimer(start, end) {
+//     console.log(start, end)
+//     setTimeout(() => {
+//         console.log("finished")
+//         eventBus.$emit('finish-song', true)
+//     }, (end - start) * 1000)
+// }
+
 export default defineComponent({
     name: "sendPlaylistID",
     data() {
         const data = JSON.parse(localStorage.getItem("data"))
         return {
+            timerFlag: false,
             id_happy:   data.happy,
             id_sad:     data.sad,
             id_chill:   data.chill,
@@ -383,23 +349,47 @@ export default defineComponent({
             // 初期状態の動画リスト
             videoUrls: {
                 "ヨルシカ - ブレーメン（OFFICIAL VIDEO）": "https://www.youtube.com/embed/oy6MDr6I6rM?start=10&end=20",
-                "ヨルシカ - 斜陽": "https://www.youtube.com/embed/bqigIHMComE?start=10&end=20",
+                "ヨルシカ - 斜陽": "https://www.youtube.com/embed/bqigIHMComE?start=30&end=50",
                 "Mrs. GREEN APPLE - 青と夏": "https://www.youtube.com/embed/m34DPnRUfMU?start=10&end=20",
             },
             currentIndex: 1
         }
     },
-    mounted() {
-        onYouTubePlayerAPIReady()
-    },
     computed: {
         currentVideoUrl() {
+            this.timerFlag = true
             const videoData = convertVideoList(this.videoUrls)
-            console.log(videoData)
             return videoData[this.currentIndex]['URL']
         },
     },
+    
+    watch: {
+        timerFlag(newValue, oldValue) {
+            if (newValue == true) this.countSongTimer()
+        }
+    },
     methods: {
+        // プレイヤーを計測する
+        countSongTimer() {
+            const videoData = convertVideoList(this.videoUrls)
+            const startTime = videoData[this.currentIndex]['start']
+            const endTime   = videoData[this.currentIndex]['end']
+            console.log("fine", startTime, endTime)
+            setTimeout(() => {
+                this.timerFlag = false
+                const videoData = convertVideoList(this.videoUrls)
+                const videoCount = videoData.length
+                this.currentIndex = (this.currentIndex + 1) % videoCount
+                console.log("finish!!")
+            }, (endTime - startTime) * 1000)
+        },
+        // 曲のURLを変える
+        changeSong(number) {
+            const videoData = convertVideoList(this.videoUrls)
+            const videoCount = videoData.length
+            this.currentIndex = (this.currentIndex + number) % videoCount
+            this.timerFlag = true
+        },
         // 数曲後の情報を示す(はみ出したら、最初にループする)
         displayOtherSongTitle(number) {
             const videoData = convertVideoList(this.videoUrls)
