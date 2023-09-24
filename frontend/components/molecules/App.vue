@@ -75,7 +75,6 @@ body:after {
 
 /* 上 */
  html:before {
-  height: 0
 }
 
 /* 右 */
@@ -90,7 +89,7 @@ body:after {
 
 /* 下 */
 body:before {
-    height: 0px;
+    height: 5px;
     width: 100vw;
     bottom: 0;
     left: 0;

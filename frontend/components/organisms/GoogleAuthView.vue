@@ -19,6 +19,7 @@
 
 <template>
   <div class="loginpage-view">
+
     <div class="fix-content">
       <div class="app-title">
         <h4>飛び込もう</h4>
@@ -52,6 +53,46 @@
 </script>
 
 <style scoped>
+/* 上 */
+html:before {
+  height: 5px;
+  width: 100vw;
+  left: 0;
+  top: 0;
+  margin-top: 20px;
+  opacity: 0.5;
+}
+
+/* 右 */
+html:after {
+  width: 5px;
+  height: 100vh;
+  right: 0;
+  top: 0;
+  margin-right: 20px;
+  opacity: 0.5;
+}
+
+/* 下 */
+body:before {
+  height: 5px;
+  width: 100vw;
+  bottom: 0;
+  left: 0;
+  margin-bottom: 20px;
+  opacity: 0.5;
+}
+
+/* 左 */
+body:after {
+  width: 5px;
+  height: 100vh;
+  top: 0;
+  left: 0;
+  margin-left: 20px;
+  opacity: 0.5;
+}
+
 h1 {
   color: #4bace3;
   padding: 0;
