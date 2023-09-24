@@ -79,6 +79,18 @@ def songle_check(titileurl):
         else :
             None
     return Result 
+
+
+def songle_decheck(titileurl):
+    
+    Result={}
+    for title ,url  in titileurl.items():
+        if songle_in(url) is True:
+            None
+        else :
+            Result.setdefault(title,None)
+    return Result 
+
 # songleからsongのサビurlを取得
 def songle_se(Result):
     Result=songle_check(Result)
@@ -113,7 +125,7 @@ def songle_in_url(query):
 
 
 # q = input('好きなアーティストを入力してください')
-# pprint.pprint(songle_in_url(q))
+# pprint.pprint(songle(q))
 
 
 
@@ -164,7 +176,7 @@ def get_video_id_all_playlist(playlistId):
     video_title_list.extend(list(map(lambda v : v['snippet']['title'],response['items'])))
     result = dict(zip(video_title_list,video_id_list))
     return result
-# playlistid　でサビ部分とurlのdictが返る
+# playlistidでサビ部分とurlのdictが返る
 def get_video_id_all_playlist_in_songle(playlistId):
     result=get_video_id_all_playlist(playlistId)
     subi=songle_se(result)
@@ -373,7 +385,27 @@ def search_Keyword(keywords):
     insertVideosIntoPlaylist(youtube,playlistItem_list_response,urls,PLAYLIST_ID)
     return print('done')
 
+def songle_check_in_or_None(titileurl):
+    
+    Result={}
+    for title ,url  in titileurl.items():
+        if songle_in(url) is True:
+            Result.setdefault(title,url)
+        else :
+            Result.setdefault(title,None)
+    return Result 
 
 
-retrival=input('検索欄')
-search_Keyword(retrival)
+
+
+def title_songle_depart(playlistId):
+    All_playlist_title_url=get_video_id_all_playlist(playlistId)
+    All_playlist_songle_url=get_video_id_all_playlist_in_songle(playlistId)
+    for title, url in All_playlist_title_url.items():
+        if title in All_playlist_songle_url:
+            All_playlist_title_url[title]=All_playlist_songle_url[title]
+        else:
+            All_playlist_title_url[title]=None
+    return All_playlist_title_url
+
+pprint.pprint(title_songle_depart('PL4fGSI1pDJn4-UIb6RKHdxam-oAUULIGB'))
