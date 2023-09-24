@@ -99,6 +99,7 @@ def get_video_id_all_playlist(playlistId):
         surbeurl.setdefault(key,url)
     return surbeurl
 
+
 def songle_search(retrieval):
     # APIKEYを取得する
     API_KEY=os.getenv('API_KEY')

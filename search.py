@@ -25,7 +25,7 @@ def songle_in(url):
         return False
     
 # ユーチューブAPIから動画のjsonを取得する。
-def songle_search(retrieval):
+def song_search(retrieval):
     # APIKEYを取得する
     API_KEY=os.getenv('API_KEY')
     YOUTUBE_API_SERVICE_NAME = 'youtube'
@@ -42,7 +42,7 @@ def songle_search(retrieval):
     request = youtube.search().list(
     q=SEARCH_QUELY, 
     part='id,snippet',
-    maxResults=5,
+    maxResults=10,
     type='video',
     videoDuration='medium', 
     order='viewCount',
@@ -51,6 +51,7 @@ def songle_search(retrieval):
     )
     response = request.execute()
     return response
+
 # responseのjsonを渡すとtitleとurlのdictが返る
 def video_url(response):
     video_id_list = []
@@ -100,14 +101,16 @@ def songle_se(Result):
     return surbeurl
 # 検索文字列を打てばタイトルとサビのdictの部分を返す
 def songle(query):
-     data=video_url(songle_search(query))
+     data=video_url(song_search(query))
      response=songle_se(data)
      return response
 
 def songle_in_url(query):
-    data = video_url(songle_search(query))
+    data = video_url(song_search(query))
     response=songle_check(data)
     return response
+
+
 
 # q = input('好きなアーティストを入力してください')
 # pprint.pprint(songle_in_url(q))
@@ -240,8 +243,6 @@ def youtube_setup():
     return build(API_SERVICE_NAME, API_VERSION, credentials=creds)
 
 
-    
-
 def searchVideosByKeywords(youtube,keywords,strLastWeek):
     videoIdArray = []
     for keyword in keywords:    
@@ -334,4 +335,45 @@ def search_by_keywords(keywards):
     insertVideosIntoPlaylist(youtube,playlistItem_list_response,urls,PLAYLIST_ID)
     return print('done')
 
-search_by_keywords('yuri')
+def youtube_search(retrieval):
+    # APIKEYを取得する
+    youtube=youtube_setup()
+    # video_id_listの初期化
+    
+    SEARCH_QUELY = retrieval
+    
+    # リスポンスの取得
+    request = youtube.search().list(
+    q=SEARCH_QUELY, 
+    part='id,snippet',
+    maxResults=10,
+    type='video',
+    videoDuration='medium', 
+    order='viewCount',
+    regionCode='jp',
+    )
+    response = request.execute()
+    return response
+
+def youtube_search_url(query):
+    data = video_url(youtube_search(query))
+    return data 
+
+def search_Keyword(keywords):
+    PLAYLIST_ID=create_newplaylist(keywords)
+    url=youtube_search_url(keywords)
+    youtube=youtube_setup()
+    playlistItem_list_response = youtube.playlistItems().list(
+        part="snippet",
+        playlistId=PLAYLIST_ID,
+        maxResults = 50,
+    ).execute()
+    urls = list(url.values())
+    urls = map(lambda v : v.replace("https://www.youtube.com/watch?v=",'',1),urls)
+    insertVideosIntoPlaylist(youtube,playlistItem_list_response,urls,PLAYLIST_ID)
+    return print('done')
+
+
+
+retrival=input('検索欄')
+search_Keyword(retrival)
