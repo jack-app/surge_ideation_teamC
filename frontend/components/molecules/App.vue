@@ -56,7 +56,6 @@ import axios from "axios";
                 <button class="music2" @click="changeSong(1)">{{ displayOtherSongTitle(1) }}</button>
                 <button class="music2" @click="changeSong(2)">{{ displayOtherSongTitle(2) }}</button>
                 <button class="music2" @click="changeSong(3)">{{ displayOtherSongTitle(3) }}</button>
-                <button class="music2" @click="changeSong(4)">{{ displayOtherSongTitle(4) }}</button>
             </section>
         </div>
     </body>
@@ -75,13 +74,8 @@ body:after {
 }
 
 /* 上 */
-/* html:before {
-  height: 5px;
-  width: 100vw;
-  left: 0;
-  top: 0;
-  margin-top: 20px;
-  opacity: 0.5;
+ html:before {
+  height: 0
 }
 
 /* 右 */
@@ -96,7 +90,7 @@ body:after {
 
 /* 下 */
 body:before {
-    height: 5px;
+    height: 0px;
     width: 100vw;
     bottom: 0;
     left: 0;
@@ -141,8 +135,8 @@ h1 {
     width: 390px;
     position: absolute;
     margin-top: 5%;
-    margin-left: auto;
-    margin-right: auto;
+    margin-left: calc(50vw - 200px);
+    margin-right: 0;
     border: #000;
 }
 iframe {
@@ -152,7 +146,9 @@ iframe {
 .choice {
     flex-wrap: wrap;
 }
-
+.choice1:hover, .choice2:hover, .choice3:hover, .choice4:hover, .choice5:hover, .choice6:hover {
+    opacity: 1;
+}
 .choice1 {
     width: 17%;
     height: 30px;
@@ -258,6 +254,9 @@ iframe {
     background-color: #e9af9d;
     opacity: 0.7;
 }
+.music2:hover {
+    opacity: 1;
+}
 
 .feel {
     margin-top: 5%;
@@ -294,6 +293,7 @@ iframe {
 // ビデオリストから開始時間や終了時間形式に変換する
 function convertVideoList(videoUrls) {
     var videoList = []
+    console.log("kkk",videoUrls)
     for (const key in videoUrls) {
         videoList.push(getVideoLength(key, videoUrls[key]))
     }
@@ -302,13 +302,19 @@ function convertVideoList(videoUrls) {
 
 // URLから動画の開始時間・終了時間を取得する
 function getVideoLength(title, URL) {
-    const queryString = URL.split('?')[1]
-    const paramArray = queryString.split('&')
     var params = {
         'title': title,
         'URL': URL + "&autoplay=1&mute=0",
         'raw_URL': URL
     }
+    console.log(title, URL)
+    if (URL == null) {
+        params['URL'] = null
+        params['raw_URL'] = null
+        return params
+    }
+    const queryString = URL.split('?')[1]
+    const paramArray = queryString.split('&')
     paramArray.forEach((param) => {
         var keyValue = param.split('=')
         var key = decodeURIComponent(keyValue[0])
@@ -339,12 +345,13 @@ export default defineComponent({
     data() {
         const data = JSON.parse(localStorage.getItem("data"))
         return {
+            verify: 3,
             timerFlag: false,
-            id_happy:   data.happy,
-            id_sad:     data.sad,
-            id_chill:   data.chill,
-            id_fight:   data.fight,
-            id_like:    data.like,
+            id_happy:   "PLcG4kHrgRmgmdWPgzXlj0mtRgErqTXaAw",
+            id_sad:     "PLcG4kHrgRmgmwi2nF2Y3MVhORdXqWVlQS",
+            id_chill:   "PLcG4kHrgRmgnkvocNC0JJ9SfhRs2KLuYF",
+            id_fight:   "PLcG4kHrgRmgm3NslMr8VCP8IRnTMPBt2a",
+            id_like:    "PLcG4kHrgRmgmmt_DddlwDV6B-_2u4swmV",
             id_etc:     data.etc,
             // 初期状態の動画リスト
             videoUrls: {
@@ -357,12 +364,12 @@ export default defineComponent({
     },
     computed: {
         currentVideoUrl() {
-            this.timerFlag = true
+            console.log("verify", this.verify)
+            if (this.verify > 0) this.timerFlag = true
             const videoData = convertVideoList(this.videoUrls)
             return videoData[this.currentIndex]['URL']
         },
     },
-    
     watch: {
         timerFlag(newValue, oldValue) {
             if (newValue == true) this.countSongTimer()
@@ -392,9 +399,10 @@ export default defineComponent({
         },
         // 数曲後の情報を示す(はみ出したら、最初にループする)
         displayOtherSongTitle(number) {
+            
             const videoData = convertVideoList(this.videoUrls)
+            console.log(videoData)
             const videoCount = videoData.length
-            //console.log("kk", videoData[(this.currentIndex + number) % videoCount])
             return videoData[(this.currentIndex + number) % videoCount]['title']
         },
         async click(playlistid) {
@@ -416,8 +424,19 @@ export default defineComponent({
                 },
             };
             const res = await axios.request(config);
-            console.log(Object.values(res.data));
-            this.videoUrls = Object.values(res.data);
+            console.log("before", res.data);
+            this.videoUrls = res.data;
+            this.timerFlag = false
+            this.verify = 0
+            Object.values(this.videoUrls).forEach((each) => {
+                if (each !== null) this.verify += 1
+            })
+            if (this.verify === 0) {
+                this.videoUrls = {
+                    "Songle対応の曲がありません": null
+                }
+            }
+            console.log("after", this.videoUrls)
         }
     },
 });

@@ -9,7 +9,7 @@ import pickle
 from googleapiclient.discovery import build
 from google_auth_oauthlib.flow import InstalledAppFlow
 from google.auth.transport.requests import Request
-os.environ['GOOGLE_APPLICATION_CREDENTIALS'] = './account_key.json'
+os.environ['GOOGLE_APPLICATION_CREDENTIALS'] = './secret/firebase_secret.json'
 
 # songleにurlがあるかを判定する。boolを返す
 def songle_in(url):
@@ -408,4 +408,4 @@ def title_songle_depart(playlistId):
             All_playlist_title_url[title]=None
     return All_playlist_title_url
 
-pprint.pprint(title_songle_depart('PL4fGSI1pDJn4-UIb6RKHdxam-oAUULIGB'))
+#pprint.pprint(title_songle_depart('PL4fGSI1pDJn4-UIb6RKHdxam-oAUULIGB'))

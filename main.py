@@ -10,7 +10,7 @@ import httplib2
 from dotenv import load_dotenv
 import os
 
-from backend.search import create_newplaylist, channel_playlist_ID, get_video_id_all_playlist
+from search import create_newplaylist, channel_playlist_ID, get_video_id_all_playlist_in_songle
 from starlette.middleware.cors import CORSMiddleware # 追加
 
 app = FastAPI()
@@ -58,7 +58,7 @@ class PlaylistID(BaseModel):
 # プレイリストIDから曲のリストをゲットする
 @app.post("/api/playlistid")
 async def get_playlistid(data: PlaylistID):
-    return get_video_id_all_playlist(data.playlistID)
+    return get_video_id_all_playlist_in_songle(data.playlistID)
 
 # グーグル認証画面を作る
 @app.get("/api/googleauth")
