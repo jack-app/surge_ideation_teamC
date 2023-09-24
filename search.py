@@ -42,7 +42,7 @@ def song_search(retrieval):
     request = youtube.search().list(
     q=SEARCH_QUELY, 
     part='id,snippet',
-    maxResults=10,
+    maxResults=50,
     type='video',
     videoDuration='medium', 
     order='viewCount',
@@ -143,7 +143,7 @@ def get_video_id_in_playlist(playlistId):
     
     request = youtube.playlistItems().list(
         part="snippet",
-        maxResults=5,
+        maxResults=50,
         playlistId=playlistId,
         fields="nextPageToken,items/snippet"
     )
@@ -166,7 +166,7 @@ def get_video_id_all_playlist(playlistId):
     video_title_list = []
     request = youtube.playlistItems().list(
         part="snippet",
-        maxResults=5,
+        maxResults=50,
         playlistId=playlistId,
         fields="nextPageToken,items/snippet"
     )
@@ -333,8 +333,8 @@ def create_newplaylist(titlename):
     ).execute()
     return playlists_insert_response["id"]
 
-def search_by_keywords(keywards):
-    PLAYLIST_ID=create_newplaylist(keywards)
+def search_by_keywords(keywards,emotion):
+    PLAYLIST_ID=create_newplaylist(emotion)
     url=songle_in_url(keywards)
     youtube=youtube_setup()
     playlistItem_list_response = youtube.playlistItems().list(
@@ -346,30 +346,35 @@ def search_by_keywords(keywards):
     urls = map(lambda v : v.replace("https://www.youtube.com/watch?v=",'',1),urls)
     insertVideosIntoPlaylist(youtube,playlistItem_list_response,urls,PLAYLIST_ID)
     return print('done')
+# q = input('ここにアーティスト名を検索')
+# e = input('ここに感情名を記入')
+# search_by_keywords(q,e)
 
-def youtube_search(retrieval):
-    # APIKEYを取得する
-    youtube=youtube_setup()
-    # video_id_listの初期化
-    
-    SEARCH_QUELY = retrieval
-    
-    # リスポンスの取得
-    request = youtube.search().list(
-    q=SEARCH_QUELY, 
-    part='id,snippet',
-    maxResults=10,
-    type='video',
-    videoDuration='medium', 
-    order='viewCount',
-    regionCode='jp',
-    )
-    response = request.execute()
-    return response
 
-def youtube_search_url(query):
-    data = video_url(youtube_search(query))
-    return data 
+# ここは自分用
+# def youtube_search(retrieval):
+#     # APIKEYを取得する
+#     youtube=youtube_setup()
+#     # video_id_listの初期化
+    
+#     SEARCH_QUELY = retrieval
+    
+#     # リスポンスの取得
+#     request = youtube.search().list(
+#     q=SEARCH_QUELY, 
+#     part='id,snippet',
+#     maxResults=10,
+#     type='video',
+#     videoDuration='medium', 
+#     order='viewCount',
+#     regionCode='jp',
+#     )
+#     response = request.execute()
+#     return response
+
+# def youtube_search_url(query):
+#     data = video_url(youtube_search(query))
+#     return data 
 
 def search_Keyword(keywords):
     PLAYLIST_ID=create_newplaylist(keywords)
@@ -395,17 +400,32 @@ def songle_check_in_or_None(titileurl):
             Result.setdefault(title,None)
     return Result 
 
-
-
-
 def title_songle_depart(playlistId):
     All_playlist_title_url=get_video_id_all_playlist(playlistId)
     All_playlist_songle_url=get_video_id_all_playlist_in_songle(playlistId)
-    for title, url in All_playlist_title_url.items():
+    for title in All_playlist_title_url.keys():
         if title in All_playlist_songle_url:
             All_playlist_title_url[title]=All_playlist_songle_url[title]
         else:
             All_playlist_title_url[title]=None
     return All_playlist_title_url
 
-pprint.pprint(title_songle_depart('PL4fGSI1pDJn4-UIb6RKHdxam-oAUULIGB'))
+def emotion_songle_in(PLAYLIST_ID,myplaylistID):
+    url = get_video_id_all_playlist(PLAYLIST_ID)
+    url=songle_check(url)
+    youtube= youtube_setup()
+    playlistItem_list_response = youtube.playlistItems().list(
+        part="snippet",
+        playlistId=myplaylistID,
+        maxResults = 50,
+    ).execute()
+    urls = list(url.values())
+    urls = map(lambda v : v.replace("https://www.youtube.com/watch?v=",'',1),urls)
+    insertVideosIntoPlaylist(youtube,playlistItem_list_response,urls,myplaylistID)
+    return print('done')
+
+# print(create_newplaylist('悲しい'))
+
+emotion_songle_in('PL_yex3sFlQmV1y6VxZ-FN-FRxb_e-tW6f','PLcG4kHrgRmgmwi2nF2Y3MVhORdXqWVlQS')
+
+
