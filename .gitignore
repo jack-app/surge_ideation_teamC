@@ -193,3 +193,6 @@ cython_debug/
 /secret
 /unused
 token.pickle
+account_key.json
+author.py-oauth2.json
+client_secret_44130362195-7j4dnus14loc9s3r30pjhmfjv9fqs19j.apps.googleusercontent.com.json
